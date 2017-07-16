@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.speech.RecognizerIntent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 /**
@@ -28,7 +32,22 @@ public class actionDoubleGesture {
     public void record_tracking(){}
 
     //double right -->
-    public void digital_braille(){}
+    public void digital_braille(Button btn1){
+       /* Vibrator v = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+        long[] patron = {0,500,300,1000,500}; //invertido se detiene por cierto y tiempo y luego vibra por cierto tiempo
+        v.vibrate(patron, 3); // se repetirá 3 veces*/
+
+        btn1.setOnHoverListener(new View.OnHoverListener() {
+            @Override
+            public boolean onHover(View view, MotionEvent motionEvent) {
+                Vibrator v = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+                long[] patron = {0,500,100,500,100}; //invertido se detiene por cierto y tiempo y luego vibra por cierto tiempo
+                v.vibrate(patron, 1);
+                return true;
+            }
+        });
+
+    }
 
     //double botton
     public void new_slides(){}

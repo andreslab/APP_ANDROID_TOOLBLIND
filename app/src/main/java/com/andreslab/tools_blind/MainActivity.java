@@ -1,8 +1,11 @@
 package com.andreslab.tools_blind;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
+import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
@@ -13,6 +16,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,9 +26,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private static final String DEBUG_TAG_GESTURE = "Gesture";
     private GestureDetectorCompat mDetector;
+    ImageView img;
 
     //btn
     Button btn_action;
+
+    Utilities utilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +43,40 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         //GestureDetector.OnDoubleTapListener
         mDetector.setOnDoubleTapListener(this);
 
-        btn_action = (Button) findViewById(R.id.btn_action);
-        btn_action.setOnClickListener(new View.OnClickListener() {
+        utilities = new Utilities(MainActivity.this);
+
+
+
+        /*actionDoubleGesture adg = new actionDoubleGesture(MainActivity.this, MainActivity.this);
+        adg.digital_braille(btn_action);*/
+
+        /*img.setOnHoverListener(new View.OnHoverListener() {
             @Override
-            public void onClick(View view) {
-                //contexto es MainActivity.class
-                //actionSimpleGesture asg = new actionSimpleGesture(MainActivity.this, MainActivity.this);
-                //asg.take_camera(getPackageManager());
+            public boolean onHover(View view, MotionEvent motionEvent) {
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                boolean consumable = false;
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_HOVER_ENTER:
+                        Log.d("TAG", "ACTION_HOVER_ENTER");
+                        long[] patron = {0, 500, 100, 500, 100}; //invertido se detiene por cierto y tiempo y luego vibra por cierto tiempo
+                        v.vibrate(patron, 1);
+                        consumable = true;
+                        break;
+                    case MotionEvent.ACTION_HOVER_MOVE:
 
-                actionDoubleGesture adg = new actionDoubleGesture(MainActivity.this, MainActivity.this);
-                adg.voice_command();
+                        Log.d("TAG", "ACTION_HOVER_MOVE");
+                        consumable = true;
+                        break;
+                    case MotionEvent.ACTION_HOVER_EXIT:
+
+                        Log.d("TAG", "ACTION_HOVER_EXIT");
+                        consumable = true;
+
+                        break;
+                }
+                return consumable;
             }
-        });
-
+        });*/
 
     }
 
@@ -67,11 +95,35 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
 
         switch (action){
-            case (MotionEvent.ACTION_DOWN):
-                Log.d(DEBUG_TAG_GESTURE, "Action down - gesture has started");
-                Log.d(DEBUG_TAG_GESTURE, "fingers: "+ finger);
-                Log.d(DEBUG_TAG_GESTURE, "Coord x: "+ posX);
-                Log.d(DEBUG_TAG_GESTURE, "Coord y: "+ posY);
+                case (MotionEvent.ACTION_DOWN):
+                    Log.d(DEBUG_TAG_GESTURE, "Action down - gesture has started");
+                    Log.d(DEBUG_TAG_GESTURE, "fingers: "+ finger);
+                    Log.d(DEBUG_TAG_GESTURE, "Coord x: "+ posX);
+                    Log.d(DEBUG_TAG_GESTURE, "Coord y: "+ posY);
+                    break;
+                case (MotionEvent.ACTION_MOVE):
+                    /*float positionImgX = img.getX();
+                    float positionImgY = img.getY();
+                    int sizeImgWidth = img.getWidth();
+                    int sizeImgHeigh = img.getHeight();
+
+                    float rangeMaxImgX = positionImgX + sizeImgWidth;
+                    float rangeMinImgX = positionImgX - sizeImgWidth;
+                    float rangeMaxImgY = positionImgY + sizeImgHeigh;
+                    float rangeMinImgY = positionImgY - sizeImgHeigh;
+
+                    if(event.getX() > rangeMinImgX && event.getX() < rangeMaxImgX ){
+                        Log.d("tag", "en el rango de la imagen del eje X");
+                    }
+
+                    if(event.getY() > rangeMinImgY && event.getY() < rangeMaxImgY ){
+                        Log.d("tag", "en el rango de la imagen del eje Y");
+                    }
+
+                    if(event.getY() > rangeMinImgY && event.getY() < rangeMaxImgY && event.getX() > rangeMinImgX && event.getX() < rangeMaxImgX ){
+                        Log.d("tag", "EN IMAGEN");
+                    }*/
+                    break;
 
         }
 
@@ -89,6 +141,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public boolean onDoubleTap(MotionEvent motionEvent) {
         //Log.d(DEBUG_TAG_GESTURE,"onDoubleTap"+motionEvent.toString());
+
+        actionDoubleGesture adg = new actionDoubleGesture(MainActivity.this, MainActivity.this);
+        adg.voice_command();
         return true;
     }
 
@@ -122,6 +177,29 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         Log.d(DEBUG_TAG_GESTURE,"onScroll---inicio---total: "+motionEvent.toString());
         Log.d(DEBUG_TAG_GESTURE,"onScroll---fin---total: "+motionEvent1.toString());
+
+
+        /*float positionImgX = img.getX();
+        float positionImgY = img.getY();
+        float sizeImgWidth = img.getWidth();
+        float sizeImgHeigh = img.getHeight();
+
+        float rangeMaxImgX = positionImgX + sizeImgWidth / 2;
+        float rangeMinImgX = positionImgX - sizeImgWidth / 2;
+        float rangeMaxImgY = positionImgY + sizeImgHeigh / 2;
+        float rangeMinImgY = positionImgY - sizeImgHeigh / 2;
+
+        if(motionEvent1.getX() > rangeMinImgX && motionEvent1.getX() < rangeMaxImgX ){
+            Log.d("tag", "en el rango de la imagen del eje X");
+        }
+
+        if(motionEvent1.getY() > rangeMinImgY && motionEvent1.getY() < rangeMaxImgY ){
+            Log.d("tag", "en el rango de la imagen del eje Y");
+        }
+
+        if(motionEvent1.getY() > rangeMinImgY && motionEvent1.getY() < rangeMaxImgY && motionEvent1.getX() > rangeMinImgX && motionEvent1.getX() < rangeMaxImgX ){
+            Log.d("tag", "EN IMAGEN");
+        }*/
 
         Log.d(DEBUG_TAG_GESTURE,"onScroll---number finger 1: "+motionEvent.getPointerCount());
         Log.d(DEBUG_TAG_GESTURE,"onScroll---number finger 2: "+motionEvent1.getPointerCount());
@@ -175,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     ArrayList<String> speech = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String strSpeech = speech.get(0);
                     Log.d("TAG-SPEECH",strSpeech);
+
+                    utilities.voiceToSpeech(strSpeech);
                 }else{
 
                 }
