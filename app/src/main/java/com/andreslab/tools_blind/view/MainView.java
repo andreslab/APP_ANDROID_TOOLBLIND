@@ -1,4 +1,4 @@
-package com.andreslab.tools_blind;
+package com.andreslab.tools_blind.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,7 +19,7 @@ public class MainView extends View {
         super.onDraw(canvas);
 
         Paint paint = new Paint();
-        paint.setColor(Color.GRAY);
+        paint.setColor(Color.LTGRAY);
         canvas.drawPaint(paint);
     }
 

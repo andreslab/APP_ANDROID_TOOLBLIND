@@ -1,6 +1,7 @@
 package com.andreslab.tools_blind;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -25,20 +26,38 @@ public class PermissionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        setContentView(R.layout.activity_permissions);
         init_permissions();
     }
 
 
     public void init_permissions(){
-        checkPermissionCamera();
+        RequestDataBase rdb = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
+        ArrayList<PermissionModel> pm = new ArrayList<PermissionModel>();
+        pm =   rdb.showData_permissions();
+
+
+        //Log.d("tag", pm.get(0).getPermission_name());
+
+        if(pm.size() < 1){
+            Log.d("DATA_BASE", "no existe base de datos");
+            checkPermissionCamera();
+        }else{
+            Log.d("DATA_BASE", "existe base de datos");
+            Intent i = new Intent(PermissionsActivity.this, MainActivity.class);
+            startActivity(i);
+        }
+
+
     }
 
     public void post_request_permissions(){
         //save in database
         RequestDataBase rdb = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
-        rdb.saveData(name_permissions);
+        rdb.saveData_permissions(name_permissions);
+        Intent i = new Intent(PermissionsActivity.this, MainActivity.class);
+        startActivity(i);
+
     }
 
 
