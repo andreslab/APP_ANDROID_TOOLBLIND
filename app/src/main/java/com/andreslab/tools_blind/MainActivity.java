@@ -159,6 +159,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         ControllerCommands.isListeningArgument = false;
                         ControllerCommands.SuccessInputParameter = true;
                         validateOnLongPress = false;
+
+                        //save parameters
+                        for (int i = 0; i <= ControllerCommands.parametersLocalCommand.size() - 1; i++) {
+                            ControllerCommands.parameters.put( ControllerCommands.LastLocalCommand, ControllerCommands.parametersLocalCommand.get(i).toString());
+                        }
                     }else{
                         //nuevo comando
                         String commandType =  this.cc.executeAndAddCommand(strSpeech);

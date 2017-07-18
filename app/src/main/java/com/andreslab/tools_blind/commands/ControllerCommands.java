@@ -14,6 +14,7 @@ import com.andreslab.tools_blind.models.LocalCommandsModel;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Created by macbookpro on 7/18/17.
@@ -29,6 +30,7 @@ public class ControllerCommands extends CommandList {
     public static Boolean GlobalCommandSelected = false;
     public static ArrayList<String> parametersLocalCommand = new ArrayList<String>();
     public static Boolean SuccessInputParameter = false;
+    public static Hashtable<String, String> parameters = new Hashtable<String, String>();
     Context context;
     CommandList comandlist = new CommandList();
 
