@@ -24,8 +24,26 @@ public class PermissionsActivity extends AppCompatActivity {
     static final int  MY_PERMISSION_REQUEST =1;
     //static final int MY_PERMISSION_REQUEST_CALL_PHONE =1;
     ArrayList<PermissionModel> name_permissions = new ArrayList<PermissionModel>();
-    String[] permission_name = {"camera","call_phone", "write_external_storage", "read_contacts"};
-    String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS};
+    String[] permission_name = {
+            "camera",
+            "call_phone",
+            "write_external_storage",
+            "read_contacts",
+            "access_fine_location",
+            "record_audio",
+            "send_sms",
+            "read_sms"};
+
+
+    String[] PERMISSIONS = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS };
 
 
     @Override
@@ -138,6 +156,41 @@ public class PermissionsActivity extends AppCompatActivity {
                 }else{
                     this.name_permissions.add(new PermissionModel(3,permission_name[3], 0));
                     Toast.makeText(this, "No se otorgó permisos para revisar los contactos", Toast.LENGTH_SHORT).show();
+                }
+
+                //access_fine_location
+                if(grantResults.length > 0 && grantResults[4] == PackageManager.PERMISSION_GRANTED){
+                    this.name_permissions.add(new PermissionModel(4,permission_name[4], 1));
+                    Toast.makeText(this, "Se otorgó permisos para obtener la localización", Toast.LENGTH_SHORT).show();
+                }else{
+                    this.name_permissions.add(new PermissionModel(4,permission_name[4], 0));
+                    Toast.makeText(this, "No se otorgó permisos para obtener la localización", Toast.LENGTH_SHORT).show();
+                }
+
+                //record_audio
+                if(grantResults.length > 0 && grantResults[5] == PackageManager.PERMISSION_GRANTED){
+                    this.name_permissions.add(new PermissionModel(5,permission_name[5], 1));
+                    Toast.makeText(this, "Se otorgó permisos para grabar", Toast.LENGTH_SHORT).show();
+                }else{
+                    this.name_permissions.add(new PermissionModel(5,permission_name[5], 0));
+                    Toast.makeText(this, "No se otorgó permisos para grabar", Toast.LENGTH_SHORT).show();
+                }
+                //send_sms
+                if(grantResults.length > 0 && grantResults[6] == PackageManager.PERMISSION_GRANTED){
+                    this.name_permissions.add(new PermissionModel(6,permission_name[6], 1));
+                    Toast.makeText(this, "Se otorgó permisos para enviar sms", Toast.LENGTH_SHORT).show();
+                }else{
+                    this.name_permissions.add(new PermissionModel(6,permission_name[6], 0));
+                    Toast.makeText(this, "No se otorgó permisos para enviar sms", Toast.LENGTH_SHORT).show();
+                }
+
+                //read_sms
+                if(grantResults.length > 0 && grantResults[7] == PackageManager.PERMISSION_GRANTED){
+                    this.name_permissions.add(new PermissionModel(7,permission_name[7], 1));
+                    Toast.makeText(this, "Se otorgó permisos para leer sms", Toast.LENGTH_SHORT).show();
+                }else{
+                    this.name_permissions.add(new PermissionModel(7,permission_name[7], 0));
+                    Toast.makeText(this, "No se otorgó permisos para leer sms", Toast.LENGTH_SHORT).show();
                 }
 
         }

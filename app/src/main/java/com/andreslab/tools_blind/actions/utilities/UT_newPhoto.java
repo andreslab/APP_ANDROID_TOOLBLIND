@@ -1,11 +1,16 @@
 package com.andreslab.tools_blind.actions.utilities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.andreslab.tools_blind.CameraActivity;
+import com.andreslab.tools_blind.actions.VoiceToSpeech;
 import com.andreslab.tools_blind.commands.ControllerCommands;
 
 /**
@@ -22,17 +27,21 @@ public class UT_newPhoto {
     public UT_newPhoto(Activity ac, PackageManager pm){
         activity = ac;
         packageManager = pm;
+
+
     }
 
     public void takePicture(){
 
         Boolean permission = true;
-
-        if (permission) {
+      if(permission){
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if(takePictureIntent.resolveActivity(packageManager) != null){
                 activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
+        }else{
+            Log.d("PERMISSIONS","no posee permisos de cámara");
+
         }
 
 

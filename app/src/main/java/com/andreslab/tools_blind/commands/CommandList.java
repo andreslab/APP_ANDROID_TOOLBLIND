@@ -32,19 +32,22 @@ public class CommandList {
 
     public CommandList() {
 
+        //::::::::::utilidades:::::::::::
         LocalCommands.put("nueva foto", new String[]{"tomar foto", "guardar foto", "salir"});
         LocalCommands.put("nueva operación", new String[]{"-","salir"});
         LocalCommands.put("nueva llamada", new String[]{"contacto","salir"});
         LocalCommands.put("nueva traducción", new String[]{"ingles a español", "español a ingles","salir"});
         LocalCommands.put("nueva alarma", new String[]{"mensaje","dia", "hora","salir"});
-        LocalCommands.put("nuevo email", new String[]{"emisor","receptor","tema","mensaje","salir"});
+        LocalCommands.put("nuevo email", new String[]{"emisor","receptor","asunto","mensaje","salir"});
         LocalCommands.put("nueva nota", new String[]{"tema", "grabar","salir"});
-        LocalCommands.put("nuevo diagrama", new String[]{"crear titulo", "secciones", "item","terminar edición"});
-        LocalCommands.put("nueva práctica", new String[]{"salir"});
-        LocalCommands.put("nuevo documento", new String[]{"terminar edición"});
-        LocalCommands.put("nuevo presentación", new String[]{"terminar edición"});
-        LocalCommands.put("nuevo juego", new String[]{"salir"});
-        LocalCommands.put("guardar ubicación", new String[]{"salir"});
+        //:::::::::::educativa::::::::::::
+        LocalCommands.put("nuevo diagrama", new String[]{"crear título", "crear división","sección","texto", "item","resumen","terminar edición"}); //sección son los niveles de arriba hacia abajo del mapa e item es la subdivision por cada sección
+        LocalCommands.put("nueva práctica", new String[]{"iniciar","reiniciar","salir"});
+        LocalCommands.put("nuevo documento", new String[]{"crear título", "crear subtítulo","alinear","punto seguido","punto final","resumen","terminar edición"});
+        LocalCommands.put("nuevo presentación", new String[]{"crear diapositiva","crear título", "crear subtítulo","texto", "alinear","punto seguido","punto final","resumen","terminar edición"});
+        //:::::::::::extras::::::::::::::
+        LocalCommands.put("nuevo juego", new String[]{"iniciar","reiniciar","salir"});
+        LocalCommands.put("guardar ubicación", new String[]{"titulo","guardar","salir"});
     }
 
 

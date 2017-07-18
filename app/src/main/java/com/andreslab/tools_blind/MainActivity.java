@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import com.andreslab.tools_blind.actions.VoiceToSpeech;
 import com.andreslab.tools_blind.actions.utilities.UT_calculator;
 import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
+import com.andreslab.tools_blind.commands.CommandList;
 import com.andreslab.tools_blind.commands.ControllerCommands;
 import com.andreslab.tools_blind.view.MainView;
 
@@ -178,15 +179,15 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         }
     }
 
-    private void executeCommandFunction(String ct){
+    private void executeCommandFunction(String ct) {
 
-        Log.d("LIST COMMANDS", "tamaño: "+ ControllerCommands.listCommands.size());
+        Log.d("LIST COMMANDS", "tamaño: " + ControllerCommands.listCommands.size());
 
-        switch (ct){
+        switch (ct) {
             case "GLOBAL":
-                Log.d("EJECUCIÓN","tipo de comando global");
+                Log.d("EJECUCIÓN", "tipo de comando global");
 
-                switch (ControllerCommands.GlobalCommands){
+                switch (ControllerCommands.GlobalCommands) {
                     case "nueva foto":
                         Intent i = new Intent(MainActivity.this, CameraActivity.class);
                         startActivity(i);
@@ -197,21 +198,178 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                 break;
             case "LOCAL":
-                Log.d("EJECUCIÓN","tipo de comando local");
-                if(ControllerCommands.GlobalCommands == "calculadora"){
-                    switch (ControllerCommands.LastLocalCommand){
+                Log.d("EJECUCIÓN", "tipo de comando local");
+                if (ControllerCommands.GlobalCommands.equals("nueva operación")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
                         case "crear operacion":
 
                             break;
 
-                         default:
+                        default:
                     }
                 }
 
-                break;
-            default:
-                Log.d("EJECUCIÓN"," ninguno");
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "contacto":
+                            VoiceToSpeech vs = new VoiceToSpeech(MainActivity.this);
+                            vs.voiceToSpeech("contact new");
+                            break;
+
+                        default:
+                    }
+                }
+        }
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva traducción")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "inglés a español":
+
+                    break;
+                case "español a inglés":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva alarma")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "mensaje":
+
+                    break;
+                case "dia":
+
+                    break;
+                case "hora":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva email")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "emisor":
+
+
+                    break;
+                case "receptor":
+
+                    break;
+                case "asunto":
+
+                    break;
+                case "mensaje":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "tema":
+
+                    break;
+                case "grabar":
+
+                    break;
+
+                default:
+            }
+        }
+        //::::::::::::::::: en desarrollo ::::::::::::::::::
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nuevo diagrama")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "crear titulo":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva práctica")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "crear operacion":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nuevo documento")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "crear operacion":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva presentación")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "crear operacion":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "crear operacion":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+        if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
+            switch (ControllerCommands.LastLocalCommand) {
+
+                case "crear operacion":
+
+                    break;
+
+                default:
+            }
+        }
+
+        //::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+
         }
 
     }
-}
+
