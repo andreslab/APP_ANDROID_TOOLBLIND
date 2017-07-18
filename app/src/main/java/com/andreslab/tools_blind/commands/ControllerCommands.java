@@ -1,8 +1,14 @@
 package com.andreslab.tools_blind.commands;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.andreslab.tools_blind.CameraActivity;
+import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
 import com.andreslab.tools_blind.models.LocalCommandsModel;
 
 import java.util.ArrayList;
@@ -13,18 +19,21 @@ import java.util.ArrayList;
 
 public class ControllerCommands extends CommandList {
 
-    static ArrayList<String> listCommands;
-    private String GlobalCommands;
-    private String LastLocalCommand;
-    private ArrayList<LocalCommandsModel> listLocalCommands;
+    public static ArrayList<String> listCommands;
+    public static String GlobalCommands;
+    public static String LastLocalCommand;
+    public static ArrayList<LocalCommandsModel> listLocalCommands;
+    public static Boolean isListeningArgument = false;
 
     public ControllerCommands(){
         this.listCommands = new ArrayList<String>();
         this.GlobalCommands = "";
         this.LastLocalCommand = "";
+        this.isListeningArgument = false;
+
     }
 
-    public void executeAndAddCommand(String c){
+    public String executeAndAddCommand(String c){
         String commandType = identifyCommandGlobalOrLocal(c);
         if(commandType == "GLOBAL"){
             if(GlobalCommands == ""){
@@ -34,11 +43,12 @@ public class ControllerCommands extends CommandList {
             }else{
                 //voz: por favor cierre edcion de [COMANDO GLOBAL]
             }
+            return commandType;
         }else{
             LastLocalCommand = c;
             this.listCommands.add(c);
+            return commandType;
         }
-        executeCommandFunction(commandType);
     }
 
     private String identifyCommandGlobalOrLocal(String c){
@@ -51,25 +61,9 @@ public class ControllerCommands extends CommandList {
         return "LOCAL";
     }
 
-    private void executeCommandFunction(String ct){
-
-        Log.d("LIST COMMANDS", "tamaño: "+this.listCommands.size());
-
-        switch (ct){
-            case "GLOBAL":
-                Log.d("EJECUCIÓN","tipo de comando global");
-
-                break;
-            case "LOCAL":
-                Log.d("EJECUCIÓN","tipo de comando local");
-                break;
-            default:
-                Log.d("EJECUCIÓN"," ninguno");
-        }
-
-    }
-
     private void deleteDataList(){
 
     }
+
+
 }

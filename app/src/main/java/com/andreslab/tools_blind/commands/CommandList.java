@@ -8,26 +8,42 @@ public class CommandList {
 
     final static String[] GlobalCommands = {
             "nueva foto",
-            "calculadora",
-            "traductor"
+            "nueva operación",
+            "nueva llamada",
+            "nueva traducción",
+            "nueva alarma",
+            "nuevo email",
+            "nueva nota",
+            /*:::::::::::::::::::::*/
+            "nuevo diagrama",
+            "nueva practica", //braille digital
+            "nuevo documento",
+            "nuevo presentación",
+            /*:::::::::::::::::::::*/
+            "nuevo juego", //juego de memoria
+            /*:::::::::::::::::::::*/
+            "guardar ubicación"
+
     };
 
-    final static String[] LocalCommands_newPhoto = {
-            "tomar foto",
-            "guardar foto"
-    };
 
-    final static String[] LocalCommands_calculator = {
-            "más",
-            "menos",
-            "por",
-            "sobre",
-            "abrir conjunto",
-            "cerrar conjunto"
-    };
-    //abrir y cerrar conjunto es ( y )
+    final static String[][] LocalCommands = {
+            {"tomar foto", "guardar foto"},
+            {"-"},
+            {"contacto"}, //automatico
+            {"ingles a español", "español a ingles"},
+            {"mensaje","dia", "hora"}, //automatico
+            {"emisor","receptor","tema","mensaje"}, //automatico
+            {"tema", "grabar"}, //automatico
+            /*::::::::::::::::::::*/
+            {"crear titulo", "secciones", "item"},
+            {},
+            {},
+            {},
+            /*::::::::::::::::::::*/
+            {},
+            /*::::::::::::::::::::*/
+            {}
 
-    final String[] LocalCommands_translate = {
-            "traducir a"
     };
 }

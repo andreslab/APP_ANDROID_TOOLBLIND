@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.andreslab.tools_blind.actions.utilities.UT_calculator;
+import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
 import com.andreslab.tools_blind.commands.ControllerCommands;
 import com.andreslab.tools_blind.view.MainView;
 
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public boolean onDown(MotionEvent motionEvent) {
 
+
         return true;
     }
 
@@ -97,12 +100,17 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
 
+
         return true;
     }
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
+        if(ControllerCommands.isListeningArgument){
 
+        }else{
+            Log.d("ESCUCHANDO ARGUMENTO", "no existe un subcomando que esté activo");
+        }
     }
 
     @Override
@@ -115,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
-
         switch (requestCode){
             case GlobalActions.RECOGNIZE_SPEECH_ACTIVITY:
                 if(resultCode == RESULT_OK && null != data){
@@ -124,8 +130,48 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     String strSpeech = speech.get(0);
                     Log.d("DATA SPEECH", strSpeech);
 
-                    this.cc.executeAndAddCommand(strSpeech);
+                   String commandType =  this.cc.executeAndAddCommand(strSpeech);
+                    executeCommandFunction(commandType);
+
                 }
+                break;
         }
+    }
+
+    private void executeCommandFunction(String ct){
+
+        Log.d("LIST COMMANDS", "tamaño: "+ ControllerCommands.listCommands.size());
+
+        switch (ct){
+            case "GLOBAL":
+                Log.d("EJECUCIÓN","tipo de comando global");
+
+                switch (ControllerCommands.GlobalCommands){
+                    case "nueva foto":
+                        Intent i = new Intent(MainActivity.this, CameraActivity.class);
+                        startActivity(i);
+                        break;
+
+                    default:
+                }
+
+                break;
+            case "LOCAL":
+                Log.d("EJECUCIÓN","tipo de comando local");
+                if(ControllerCommands.GlobalCommands == "calculadora"){
+                    switch (ControllerCommands.LastLocalCommand){
+                        case "crear operacion":
+
+                            break;
+
+                         default:
+                    }
+                }
+
+                break;
+            default:
+                Log.d("EJECUCIÓN"," ninguno");
+        }
+
     }
 }
