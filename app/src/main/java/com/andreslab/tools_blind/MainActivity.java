@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.andreslab.tools_blind.commands.ControllerCommands;
 import com.andreslab.tools_blind.view.MainView;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private static final String DEBUG_TAG_GESTURE = "Gesture";
     private GestureDetectorCompat mDetector;
+    ControllerCommands cc = new ControllerCommands();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,12 +115,16 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
+
         switch (requestCode){
             case GlobalActions.RECOGNIZE_SPEECH_ACTIVITY:
                 if(resultCode == RESULT_OK && null != data){
                     ArrayList<String> speech = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String strSpeech = speech.get(0);
                     Log.d("DATA SPEECH", strSpeech);
+
+                    this.cc.executeAndAddCommand(strSpeech);
                 }
         }
     }
