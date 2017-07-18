@@ -25,6 +25,7 @@ public class VoiceToSpeech {
             public void onInit(int i) {
                 ttobj.setLanguage((Locale.US));
                 ttobj.speak(textInput, TextToSpeech.QUEUE_FLUSH,null);
+
             }
         });
 

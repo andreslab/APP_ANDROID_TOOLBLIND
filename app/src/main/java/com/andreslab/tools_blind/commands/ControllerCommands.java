@@ -27,15 +27,20 @@ public class ControllerCommands extends CommandList {
     public static ArrayList<LocalCommandsModel> listLocalCommands;
     public static Boolean isListeningArgument = false;
     public static Boolean GlobalCommandSelected = false;
+    public static ArrayList<String> parametersLocalCommand = new ArrayList<String>();
+    public static Boolean SuccessInputParameter = false;
     Context context;
     CommandList comandlist = new CommandList();
 
+    VoiceToSpeech vts;
+
     public ControllerCommands(Context ctx){
-        this.listCommands = new ArrayList<String>();
-        this.GlobalCommands = "";
-        this.LastLocalCommand = "";
-        this.isListeningArgument = false;
-        this.context = ctx;
+        listCommands = new ArrayList<String>();
+        GlobalCommands = "";
+        LastLocalCommand = "";
+        isListeningArgument = false;
+        context = ctx;
+        vts = new VoiceToSpeech(this.context);
 
 
     }
@@ -45,35 +50,57 @@ public class ControllerCommands extends CommandList {
         if(commandType == "GLOBAL"){
 
             if (GlobalCommandSelected == false) {
+                listCommands.add("cmd-"+c);
                 GlobalCommands = c;
                 GlobalCommandSelected = true;
+                isListeningArgument = false;
+                LastLocalCommand = "";
             }else{
-                VoiceToSpeech vts = new VoiceToSpeech(this.context);
-                vts.voiceToSpeech("it existe a gobal command");
+                vts.voiceToSpeech("Exist a global command");
+                //ya existe un comando global ejecutandose
             }
             return commandType;
         }else{
             if(GlobalCommandSelected && !isListeningArgument ) {
                 //String[] localCommands =
-
-                for (int i = 0; i <= comandlist.LocalCommands.get(GlobalCommands).length-1; i++){
-                    Log.d("comandos locales",comandlist.LocalCommands.get(GlobalCommands)[i]);
-                }
                 LastLocalCommand = c;
-                this.listCommands.add(c);
-                isListeningArgument = true;
+                for (int i = 0; i <= comandlist.LocalCommands.get(GlobalCommands).length-1; i++){
+                    Log.d("COMANDOS LOCALES",comandlist.LocalCommands.get(GlobalCommands)[i]);
+                    //se guarda comandos locales del comando global
+                    parametersLocalCommand.add(comandlist.LocalCommands.get(GlobalCommands)[i]);
+                    if(comandlist.LocalCommands.get(GlobalCommands)[i].equals(LastLocalCommand)){
+                        Log.d("COMANDOS LOCALES", "EL COMANDO EXISTE");
+                        listCommands.add(LastLocalCommand);
+                        isListeningArgument = true;
+                    }
+                }
+                if(isListeningArgument == false){
+                        vts.voiceToSpeech("Local command not exist");
 
-                if(c == "salir"){
+                }
+
+                if(LastLocalCommand.equals("salir")){
                     isListeningArgument = false;
                     GlobalCommandSelected = false;
                     GlobalCommands = "";
+                    vts.voiceToSpeech("exit of command "+GlobalCommands);
 
                 }
             }
 
             else{
-                VoiceToSpeech vts = new VoiceToSpeech(this.context);
+                if(c.equals("último comando") && isListeningArgument){
+                    //proporciona el ultimo comando local usado
+                    vts.voiceToSpeech("The actual local command is "+ LastLocalCommand);
+                }else if (c.equals("omitir")){
+                    isListeningArgument = false;
+                    LastLocalCommand = "";
+                    //omite el comando local actual
+                }
+                else{
                 vts.voiceToSpeech("global command not found ");
+
+                }
             }
             return commandType;
         }

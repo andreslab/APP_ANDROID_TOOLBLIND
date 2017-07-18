@@ -1,6 +1,8 @@
 package com.andreslab.tools_blind;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.andreslab.tools_blind.actions.VoiceToSpeech;
 import com.andreslab.tools_blind.actions.utilities.UT_calculator;
 import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
 import com.andreslab.tools_blind.commands.ControllerCommands;
@@ -22,6 +25,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private static final String DEBUG_TAG_GESTURE = "Gesture";
     private GestureDetectorCompat mDetector;
     ControllerCommands cc = new ControllerCommands(MainActivity.this);
+    VoiceToSpeech vts;
+    Vibrator vibrator;
+    Boolean validateOnLongPress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         mDetector = new GestureDetectorCompat(this, this);
         //GestureDetector.OnDoubleTapListener
         mDetector.setOnDoubleTapListener(this);
+        vts = new VoiceToSpeech(MainActivity.this);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+        validateOnLongPress = false;
 
 
     }
@@ -68,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public boolean onDoubleTap(MotionEvent motionEvent) {
-        Log.d(DEBUG_TAG_GESTURE, "on doubletap");
         GlobalActions ga = new GlobalActions(MainActivity.this, MainActivity.this);
         ga.voice_command();
         return true;
@@ -106,12 +115,27 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
+        validateOnLongPress = true;
+        vibrator.vibrate(200000);
         if(ControllerCommands.isListeningArgument){
-
-        }else{
+            //vts.voiceToSpeech("Local command listening is "+ControllerCommands.LastLocalCommand);
+            //se agrega el valor del comando local
+            GlobalActions ga = new GlobalActions(MainActivity.this, MainActivity.this);
+            ga.voice_command();
+            vibrator.cancel();
+        }else {
             Log.d("ESCUCHANDO ARGUMENTO", "no existe un subcomando que esté activo");
+            vts.voiceToSpeech("Sorry, not found local command listening");
+            validateOnLongPress = false;
+            String listParameters = "";
+            for (int i = 0; i <= ControllerCommands.parametersLocalCommand.size() - 1; i++) {
+                listParameters += "\n" + ControllerCommands.parametersLocalCommand.get(i).toString() + "\n";
+            }
+            vibrator.cancel();
         }
-    }
+
+        }
+
 
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
@@ -129,9 +153,20 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     ArrayList<String> speech = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String strSpeech = speech.get(0);
                     Log.d("DATA SPEECH", strSpeech);
+                    if(ControllerCommands.isListeningArgument && ControllerCommands.GlobalCommandSelected && validateOnLongPress && strSpeech.length() > 1){
+                        //parametros del comando local activo
+                        vts.voiceToSpeech("save Parameters success of local command "+ControllerCommands.LastLocalCommand);
+                        ControllerCommands.isListeningArgument = false;
+                        ControllerCommands.SuccessInputParameter = true;
+                        validateOnLongPress = false;
+                    }else{
+                        //nuevo comando
+                        String commandType =  this.cc.executeAndAddCommand(strSpeech);
+                        executeCommandFunction(commandType);
+                    }
 
-                   String commandType =  this.cc.executeAndAddCommand(strSpeech);
-                    executeCommandFunction(commandType);
+
+
 
                 }
                 break;

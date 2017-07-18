@@ -1,5 +1,6 @@
 package com.andreslab.tools_blind;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class CameraActivity extends AppCompatActivity {
             case UT_newPhoto.REQUEST_IMAGE_CAPTURE:
                 if (resultCode == RESULT_OK && null != data) {
                     Log.d("CAMERA ACTIVITY", "ejecutando camara");
+                    finish();
                 }
                 break;
         }
