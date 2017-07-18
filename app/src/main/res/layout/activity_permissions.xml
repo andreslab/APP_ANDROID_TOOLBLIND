@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.andreslab.tools_blind.MainActivity"
-    android:background="@color/colorAccent">
-
+    tools:context="com.andreslab.tools_blind.PermissionsActivity">
 
 </android.support.constraint.ConstraintLayout>
