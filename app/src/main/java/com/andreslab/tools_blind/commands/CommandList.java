@@ -1,5 +1,7 @@
 package com.andreslab.tools_blind.commands;
 
+import java.util.Hashtable;
+
 /**
  * Created by macbookpro on 7/18/17.
  */
@@ -16,7 +18,7 @@ public class CommandList {
             "nueva nota",
             /*:::::::::::::::::::::*/
             "nuevo diagrama",
-            "nueva practica", //braille digital
+            "nueva práctica", //braille digital
             "nuevo documento",
             "nuevo presentación",
             /*:::::::::::::::::::::*/
@@ -26,24 +28,24 @@ public class CommandList {
 
     };
 
+    final static Hashtable<String, String[]> LocalCommands = new Hashtable<String, String[]>();
 
-    final static String[][] LocalCommands = {
-            {"tomar foto", "guardar foto"},
-            {"-"},
-            {"contacto"}, //automatico
-            {"ingles a español", "español a ingles"},
-            {"mensaje","dia", "hora"}, //automatico
-            {"emisor","receptor","tema","mensaje"}, //automatico
-            {"tema", "grabar"}, //automatico
-            /*::::::::::::::::::::*/
-            {"crear titulo", "secciones", "item"},
-            {},
-            {},
-            {},
-            /*::::::::::::::::::::*/
-            {},
-            /*::::::::::::::::::::*/
-            {}
+    public CommandList() {
 
-    };
+        LocalCommands.put("nueva foto", new String[]{"tomar foto", "guardar foto", "salir"});
+        LocalCommands.put("nueva operación", new String[]{"-","salir"});
+        LocalCommands.put("nueva llamada", new String[]{"contacto","salir"});
+        LocalCommands.put("nueva traducción", new String[]{"ingles a español", "español a ingles","salir"});
+        LocalCommands.put("nueva alarma", new String[]{"mensaje","dia", "hora","salir"});
+        LocalCommands.put("nuevo email", new String[]{"emisor","receptor","tema","mensaje","salir"});
+        LocalCommands.put("nueva nota", new String[]{"tema", "grabar","salir"});
+        LocalCommands.put("nuevo diagrama", new String[]{"crear titulo", "secciones", "item","terminar edición"});
+        LocalCommands.put("nueva práctica", new String[]{"salir"});
+        LocalCommands.put("nuevo documento", new String[]{"terminar edición"});
+        LocalCommands.put("nuevo presentación", new String[]{"terminar edición"});
+        LocalCommands.put("nuevo juego", new String[]{"salir"});
+        LocalCommands.put("guardar ubicación", new String[]{"salir"});
+    }
+
+
 }

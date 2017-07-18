@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private static final String DEBUG_TAG_GESTURE = "Gesture";
     private GestureDetectorCompat mDetector;
-    ControllerCommands cc = new ControllerCommands();
+    ControllerCommands cc = new ControllerCommands(MainActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

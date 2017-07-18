@@ -8,9 +8,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.andreslab.tools_blind.CameraActivity;
+import com.andreslab.tools_blind.actions.VoiceToSpeech;
 import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
 import com.andreslab.tools_blind.models.LocalCommandsModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -24,37 +26,64 @@ public class ControllerCommands extends CommandList {
     public static String LastLocalCommand;
     public static ArrayList<LocalCommandsModel> listLocalCommands;
     public static Boolean isListeningArgument = false;
+    public static Boolean GlobalCommandSelected = false;
+    Context context;
+    CommandList comandlist = new CommandList();
 
-    public ControllerCommands(){
+    public ControllerCommands(Context ctx){
         this.listCommands = new ArrayList<String>();
         this.GlobalCommands = "";
         this.LastLocalCommand = "";
         this.isListeningArgument = false;
+        this.context = ctx;
+
 
     }
 
     public String executeAndAddCommand(String c){
         String commandType = identifyCommandGlobalOrLocal(c);
         if(commandType == "GLOBAL"){
-            if(GlobalCommands == ""){
-                GlobalCommands = c; //guarda el comando global sin modificar
-                c = "0" + c;
-                this.listCommands.add(c);
+
+            if (GlobalCommandSelected == false) {
+                GlobalCommands = c;
+                GlobalCommandSelected = true;
             }else{
-                //voz: por favor cierre edcion de [COMANDO GLOBAL]
+                VoiceToSpeech vts = new VoiceToSpeech(this.context);
+                vts.voiceToSpeech("it existe a gobal command");
             }
             return commandType;
         }else{
-            LastLocalCommand = c;
-            this.listCommands.add(c);
+            if(GlobalCommandSelected && !isListeningArgument ) {
+                //String[] localCommands =
+
+                for (int i = 0; i <= comandlist.LocalCommands.get(GlobalCommands).length-1; i++){
+                    Log.d("comandos locales",comandlist.LocalCommands.get(GlobalCommands)[i]);
+                }
+                LastLocalCommand = c;
+                this.listCommands.add(c);
+                isListeningArgument = true;
+
+                if(c == "salir"){
+                    isListeningArgument = false;
+                    GlobalCommandSelected = false;
+                    GlobalCommands = "";
+
+                }
+            }
+
+            else{
+                VoiceToSpeech vts = new VoiceToSpeech(this.context);
+                vts.voiceToSpeech("global command not found ");
+            }
             return commandType;
         }
     }
 
     private String identifyCommandGlobalOrLocal(String c){
         String lastCommand = c;
-        for (int i = 0; i <= CommandList.GlobalCommands.length-1; i++){
-            if(CommandList.GlobalCommands[i].toString().equals(lastCommand)){
+        for (int i = 0; i <= comandlist.GlobalCommands.length-1; i++){
+            if(comandlist.GlobalCommands[i].toString().equals(lastCommand)){
+
                 return "GLOBAL";
             }
         }
