@@ -1,5 +1,7 @@
 package com.andreslab.tools_blind;
 
+import android.content.Intent;
+import android.speech.RecognizerIntent;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +10,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.andreslab.tools_blind.view.MainView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener{
 
@@ -61,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public boolean onDoubleTap(MotionEvent motionEvent) {
         Log.d(DEBUG_TAG_GESTURE, "on doubletap");
+        GlobalActions ga = new GlobalActions(MainActivity.this, MainActivity.this);
+        ga.voice_command();
         return true;
     }
 
@@ -103,6 +109,17 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-
+        switch (requestCode){
+            case GlobalActions.RECOGNIZE_SPEECH_ACTIVITY:
+                if(resultCode == RESULT_OK && null != data){
+                    ArrayList<String> speech = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    String strSpeech = speech.get(0);
+                    Log.d("DATA SPEECH", strSpeech);
+                }
+        }
+    }
 }
