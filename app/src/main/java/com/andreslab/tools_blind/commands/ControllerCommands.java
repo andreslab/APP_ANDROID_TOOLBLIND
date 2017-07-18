@@ -15,11 +15,13 @@ public class ControllerCommands extends CommandList {
 
     static ArrayList<String> listCommands;
     private String GlobalCommands;
+    private String LastLocalCommand;
     private ArrayList<LocalCommandsModel> listLocalCommands;
 
     public ControllerCommands(){
         this.listCommands = new ArrayList<String>();
         this.GlobalCommands = "";
+        this.LastLocalCommand = "";
     }
 
     public void executeAndAddCommand(String c){
@@ -33,6 +35,7 @@ public class ControllerCommands extends CommandList {
                 //voz: por favor cierre edcion de [COMANDO GLOBAL]
             }
         }else{
+            LastLocalCommand = c;
             this.listCommands.add(c);
         }
         executeCommandFunction(commandType);
