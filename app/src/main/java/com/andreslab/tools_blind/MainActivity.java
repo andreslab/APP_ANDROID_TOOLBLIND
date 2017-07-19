@@ -189,8 +189,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                 switch (ControllerCommands.GlobalCommands) {
                     case "nueva foto":
-                        Intent i = new Intent(MainActivity.this, CameraActivity.class);
-                        startActivity(i);
+                        Intent f = new Intent(MainActivity.this, CameraActivity.class);
+                        startActivity(f);
+                        break;
+                    case "nueva práctica":
+                        Intent d = new Intent(MainActivity.this, DigitalBraille.class);
+                        startActivity(d);
                         break;
 
                     default:

@@ -5,4 +5,13 @@ package com.andreslab.tools_blind.actions.educative;
  */
 
 public class ED_digitalBraille {
+
+    public ED_digitalBraille(){
+
+    }
+
+    public void Start(){}
+    public void Restart(){}
+    public void Exit(){}
+
 }
