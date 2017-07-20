@@ -1,5 +1,6 @@
 package com.andreslab.tools_blind.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,8 +13,12 @@ import android.view.View;
  */
 
 public class MainView extends View {
+
+
+
     public MainView(Context context){
         super(context);
+
     }
 
     protected void onDraw(Canvas canvas){

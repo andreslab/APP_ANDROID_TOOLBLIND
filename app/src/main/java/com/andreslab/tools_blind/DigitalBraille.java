@@ -11,6 +11,6 @@ public class DigitalBraille extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new DigitalBrailleView(DigitalBraille.this));
+        setContentView(new DigitalBrailleView(DigitalBraille.this, DigitalBraille.this));
     }
 }
