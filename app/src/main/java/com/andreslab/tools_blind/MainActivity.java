@@ -1,9 +1,15 @@
 package com.andreslab.tools_blind;
 
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +25,14 @@ import com.andreslab.tools_blind.commands.ControllerCommands;
 import com.andreslab.tools_blind.view.MainView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Hashtable;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener{
 
+
+    private static final int ALARM_REQUEST_CODE = 1;
 
     private static final String DEBUG_TAG_GESTURE = "Gesture";
     private GestureDetectorCompat mDetector;
@@ -29,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     VoiceToSpeech vts;
     Vibrator vibrator;
     Boolean validateOnLongPress;
+    Hashtable<String,String> parametros = new Hashtable<String,String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         validateOnLongPress = false;
+
+
+        //parametros.put("mensaje", "hola");
 
 
     }
@@ -155,8 +170,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     String strSpeech = speech.get(0);
                     Log.d("DATA SPEECH", strSpeech);
                     if(ControllerCommands.isListeningArgument && ControllerCommands.GlobalCommandSelected && validateOnLongPress && strSpeech.length() > 1){
+                        Log.d("OPCIONES",".....op 1 .......");
                         //parametros del comando local activo
                         vts.voiceToSpeech("save Parameters success of local command "+ControllerCommands.LastLocalCommand);
+                        parametros.put(ControllerCommands.LastLocalCommand,strSpeech);
+                        Log.d("PARAMETRO GUARDADO", parametros.toString());
                         ControllerCommands.isListeningArgument = false;
                         ControllerCommands.SuccessInputParameter = true;
                         validateOnLongPress = false;
@@ -165,8 +183,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         for (int i = 0; i <= ControllerCommands.parametersLocalCommand.size() - 1; i++) {
                             ControllerCommands.parameters.put( ControllerCommands.LastLocalCommand, ControllerCommands.parametersLocalCommand.get(i).toString());
                         }
-                    }else{
-                        //nuevo comando
+
+                    } else if(strSpeech.equals("ejecutar") && !parametros.isEmpty()){
+                        Log.d("OPCIONES",".....op 2 .......");
+                        executeCommand();
+                    }
+                    else {
+                        Log.d("OPCIONES",".....op 1 .......");
+                        //nuevo comando tanto global como local
                         String commandType =  this.cc.executeAndAddCommand(strSpeech);
                         executeCommandFunction(commandType);
                     }
@@ -203,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 break;
             case "LOCAL":
                 Log.d("EJECUCIÓN", "tipo de comando local");
+
                 if (ControllerCommands.GlobalCommands.equals("nueva operación")) {
                     switch (ControllerCommands.LastLocalCommand) {
 
@@ -226,153 +251,329 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         default:
                     }
                 }
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva traducción")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "inglés a español":
+
+                            break;
+                        case "español a inglés":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva alarma")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "mensaje":
+
+                            break;
+                        case "dia":
+
+                            break;
+                        case "hora":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva email")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "emisor":
+
+
+                            break;
+                        case "receptor":
+
+                            break;
+                        case "asunto":
+
+                            break;
+                        case "mensaje":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "tema":
+
+                            break;
+                        case "grabar":
+
+                            break;
+
+                        default:
+                    }
+                }
+                //::::::::::::::::: en desarrollo ::::::::::::::::::
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nuevo diagrama")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "crear titulo":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva práctica")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "crear operacion":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nuevo documento")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "crear operacion":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva presentación")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "crear operacion":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "crear operacion":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+                if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
+                    switch (ControllerCommands.LastLocalCommand) {
+
+                        case "crear operacion":
+
+                            break;
+
+                        default:
+                    }
+                }
+
+                //::::::::::::::::::::::::::::::::::::::::::::::::::
+
         }
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva traducción")) {
-            switch (ControllerCommands.LastLocalCommand) {
 
-                case "inglés a español":
 
-                    break;
-                case "español a inglés":
 
-                    break;
 
-                default:
+        }
+
+
+        private void executeCommand(){
+
+            if (ControllerCommands.GlobalCommands.equals("nueva operación")) {
+
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva alarma")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
+                if(parametros.containsKey("contacto") || parametros.containsKey("teléfono")) {
+                    Log.d("EXECUTE", "se ejecuta la llamada");
 
-                case "mensaje":
+                    //extraer teléfono de un contacto
 
-                    break;
-                case "dia":
 
-                    break;
-                case "hora":
-
-                    break;
-
-                default:
+                    //usar teléfono directo
+                    String tel = parametros.get("teléfono");
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
+                            PackageManager.PERMISSION_GRANTED) {
+                        Intent e = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
+                        startActivity(e);
+                    }
+                }
             }
-        }
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva traducción")) {
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva email")) {
-            switch (ControllerCommands.LastLocalCommand) {
-
-                case "emisor":
-
-
-                    break;
-                case "receptor":
-
-                    break;
-                case "asunto":
-
-                    break;
-                case "mensaje":
-
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva alarma")) {
 
-                case "tema":
 
-                    break;
-                case "grabar":
 
-                    break;
+                Log.d("NUEVA ALARMA", "Alarma definida");
 
-                default:
+                AlarmManager alarmMgr;
+                PendingIntent alarmIntent;
+
+                alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                alarmIntent = PendingIntent.getBroadcast(MainActivity.this, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                Calendar calendar = Calendar.getInstance();
+
+                //definir tiempo
+                String t = parametros.get("hora");
+                String hora = "";
+                String min = "";
+                Boolean activeY = false;
+                ArrayList<String> rango_num = new ArrayList<String>();
+                int position = 0;
+
+                if(t.contains("y") || t.contains(":")){
+                    for(Character e:t.toCharArray()){
+                        if(e.toString().equals("y") || e.toString().equals(":")){
+                            activeY = true;
+                        }else if (activeY){
+                            if(!e.toString().equals(" ")){
+                                min += e.toString();
+                            }
+                        }else{
+                            if(!e.toString().equals(" ")) {
+                                hora += e.toString();
+                            }
+                        }
+                    }
+                    //definir hora
+
+                    calendar.setTimeInMillis(System.currentTimeMillis());
+                    calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora));
+                    calendar.set(Calendar.MINUTE, Integer.parseInt(min));
+
+
+                }else if(t.contains("en")){
+                    if (t.contains("segundos") || t.contains("segundo")){
+                        for(Character e:t.toCharArray()){
+                            if(e.toString().equals(" ")){
+                                rango_num.add(String.valueOf(position));
+
+                            }
+                            position++;
+                        }
+                        position = 0;
+
+                        int inicio = Integer.parseInt(rango_num.get(0));
+                        int fin = Integer.parseInt(rango_num.get(1));
+                        Log.d("ALARMA POSICION","inicio:"+inicio+" fin:"+fin);
+                        String v = t.substring(inicio, fin);
+                        try {
+                            int valor = Integer.parseInt(v);
+                            calendar.setTimeInMillis(System.currentTimeMillis() + valor * 1000);
+                        }catch (Exception e){
+                            Log.d("ALARMA","el valor ingresado no es correcto");
+                        }
+
+
+                    }else if(t. contains("minuto") || t.contains("minutos")){
+                        for(Character e:t.toCharArray()){
+                            if(e.toString().equals(" ")){
+                                rango_num.add(String.valueOf(position));
+
+                            }
+                            position++;
+                        }
+                        position = 0;
+
+                        int inicio = Integer.parseInt(rango_num.get(0));
+                        int fin = Integer.parseInt(rango_num.get(1));
+                        Log.d("ALARMA POSICION","inicio:"+inicio+" fin:"+fin);
+                        String v = t.substring(inicio, fin);
+                        try {
+                            int valor = Integer.parseInt(v);
+                            //1000 por milisegundos, 60 por cada segundo tiene 0 segundos
+                            calendar.setTimeInMillis(System.currentTimeMillis() + valor * 1000 * 60);
+                        }catch (Exception e){
+                            Log.d("ALARMA","el valor ingresado no es correcto");
+                        }
+                    }
+                }
+
+
+                Log.d("HORA DEFINIDA", ""+calendar.getTimeInMillis());
+                Log.d("HORA ACTUAL", ""+System.currentTimeMillis());
+
+                // Repeticiones en intervalos de 20 minutos
+                /*alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        1000 * 60 * 20, alarmIntent);*/
+
+                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                calendar.clear();
+
             }
-        }
-        //::::::::::::::::: en desarrollo ::::::::::::::::::
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nuevo diagrama")) {
-            switch (ControllerCommands.LastLocalCommand) {
 
-                case "crear titulo":
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva email")) {
 
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva práctica")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
 
-                case "crear operacion":
-
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nuevo documento")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nuevo diagrama")) {
 
-                case "crear operacion":
-
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva presentación")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva práctica")) {
 
-                case "crear operacion":
-
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nuevo documento")) {
 
-                case "crear operacion":
-
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
-        if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
-            switch (ControllerCommands.LastLocalCommand) {
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva presentación")) {
 
-                case "crear operacion":
-
-                    break;
-
-                default:
             }
-        }
 
-        //::::::::::::::::::::::::::::::::::::::::::::::::::
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
 
+            }
 
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
 
+            }
         }
 
     }
