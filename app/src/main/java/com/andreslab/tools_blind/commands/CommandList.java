@@ -24,7 +24,9 @@ public class CommandList {
             /*:::::::::::::::::::::*/
             "nuevo juego", //juego de memoria
             /*:::::::::::::::::::::*/
-            "guardar ubicación"
+            "guardar ubicación",
+            /*:::::::::::::::::::*/
+            "configurar email"
 
     };
 
@@ -48,6 +50,8 @@ public class CommandList {
         //:::::::::::extras::::::::::::::
         LocalCommands.put("nuevo juego", new String[]{"iniciar","reiniciar","salir"});
         LocalCommands.put("guardar ubicación", new String[]{"titulo","guardar","salir"});
+        //:::::::::::config::::::::::::::
+        LocalCommands.put("configurar email",new String[]{"email","contraseña","salir"});
     }
 
 

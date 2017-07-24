@@ -18,18 +18,26 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.andreslab.tools_blind.actions.VoiceToSpeech;
-import com.andreslab.tools_blind.actions.utilities.UT_calculator;
-import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
-import com.andreslab.tools_blind.commands.CommandList;
+import com.andreslab.tools_blind.actions.utilities.UT_sendEmail;
 import com.andreslab.tools_blind.commands.ControllerCommands;
 import com.andreslab.tools_blind.view.MainView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
-import java.util.concurrent.TimeUnit;
+import java.util.Properties;
+
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener{
+
+
+    //::send email
+    Properties emailProperties;
+    Session mailSession;
+    MimeMessage emailMessage;
+    //::::::::::::
 
 
     private static final int ALARM_REQUEST_CODE = 1;
@@ -172,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     if(ControllerCommands.isListeningArgument && ControllerCommands.GlobalCommandSelected && validateOnLongPress && strSpeech.length() > 1){
                         Log.d("OPCIONES",".....op 1 .......");
                         //parametros del comando local activo
-                        vts.voiceToSpeech("save Parameters success of local command "+ControllerCommands.LastLocalCommand);
+                        //vts.voiceToSpeech("save Parameters success of local command "+ControllerCommands.LastLocalCommand);
                         parametros.put(ControllerCommands.LastLocalCommand,strSpeech);
                         Log.d("PARAMETRO GUARDADO", parametros.toString());
                         ControllerCommands.isListeningArgument = false;
@@ -411,8 +419,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
+                Log.d("NUEVA LLAMADA", "execute");
                 if(parametros.containsKey("contacto") || parametros.containsKey("teléfono")) {
-                    Log.d("EXECUTE", "se ejecuta la llamada");
 
                     //extraer teléfono de un contacto
 
@@ -431,12 +439,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             }
 
+
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva alarma")) {
-
-
-
-                Log.d("NUEVA ALARMA", "Alarma definida");
+                Log.d("NUEVA ALARMA", "execute");
 
                 AlarmManager alarmMgr;
                 PendingIntent alarmIntent;
@@ -488,13 +494,13 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                         int inicio = Integer.parseInt(rango_num.get(0));
                         int fin = Integer.parseInt(rango_num.get(1));
-                        Log.d("ALARMA POSICION","inicio:"+inicio+" fin:"+fin);
+                        Log.d("NUEVA ALARMA","inicio:"+inicio+" fin:"+fin);
                         String v = t.substring(inicio, fin);
                         try {
                             int valor = Integer.parseInt(v);
                             calendar.setTimeInMillis(System.currentTimeMillis() + valor * 1000);
                         }catch (Exception e){
-                            Log.d("ALARMA","el valor ingresado no es correcto");
+                            Log.d("NUEVA ALARMA","el valor ingresado no es correcto");
                         }
 
 
@@ -510,21 +516,21 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                         int inicio = Integer.parseInt(rango_num.get(0));
                         int fin = Integer.parseInt(rango_num.get(1));
-                        Log.d("ALARMA POSICION","inicio:"+inicio+" fin:"+fin);
+                        Log.d("NUEVA ALARMA","inicio:"+inicio+" fin:"+fin);
                         String v = t.substring(inicio, fin);
                         try {
                             int valor = Integer.parseInt(v);
                             //1000 por milisegundos, 60 por cada segundo tiene 0 segundos
                             calendar.setTimeInMillis(System.currentTimeMillis() + valor * 1000 * 60);
                         }catch (Exception e){
-                            Log.d("ALARMA","el valor ingresado no es correcto");
+                            Log.d("NUEVA ALARMA","el valor ingresado no es correcto");
                         }
                     }
                 }
 
 
-                Log.d("HORA DEFINIDA", ""+calendar.getTimeInMillis());
-                Log.d("HORA ACTUAL", ""+System.currentTimeMillis());
+                Log.d("NUEVA ALARMA", "HORA DEFINIDA: "+calendar.getTimeInMillis());
+                Log.d("NUEVA ALARMA", "HORA ACTUAL: "+System.currentTimeMillis());
 
                 // Repeticiones en intervalos de 20 minutos
                 /*alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
@@ -534,10 +540,34 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 calendar.clear();
 
             }
-
             //::::::::::::::::::::::::::::::::::::::::::::::::::
-            if (ControllerCommands.GlobalCommands.equals("nueva email")) {
+            if (ControllerCommands.GlobalCommands.equals("nuevo email")) {
+                String emisor = "";
+                String receptor = "";
+                String asunto = "sin título";
+                String mensaje = "";
 
+                parametros.put("emisor","jaimeandrade454@gmail.com");
+                parametros.put("receptor","andres_j-a@hotmail.com");
+
+                if (parametros.containsKey("emisor") &&
+                        parametros.containsKey("receptor") &&
+                        parametros.containsKey("mensaje")) {
+
+                    //emisor = parametros.get("emisor");//optener mail por nombre en a base de datos
+                    emisor = "jaimeandrade454@gmail.com";
+                    receptor = parametros.get("receptor");
+                    if(parametros.containsKey("asunto")){
+                        asunto = parametros.get("asunto");
+                    }
+                    mensaje = parametros.get("mensaje");
+
+                    UT_sendEmail sm = new UT_sendEmail(MainActivity.this, receptor, asunto, mensaje);
+                    //Executing sendmail to send email
+                    sm.execute();
+
+                    Log.d("NUEVO EMAIL","mensaje enviado");
+                }
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -574,7 +604,17 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
 
             }
+
+
+
+
+            //::::::::::::::::::::::configuración::::::::::::::::::
+            if (ControllerCommands.GlobalCommands.equals("configurar email")) {
+
+            }
         }
+
+
 
     }
 

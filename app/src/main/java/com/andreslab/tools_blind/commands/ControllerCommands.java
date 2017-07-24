@@ -77,8 +77,8 @@ public class ControllerCommands extends CommandList {
                     }
                 }
                 if(isListeningArgument == false){
-                        vts.voiceToSpeech("Local command not exist");
-
+                        //vts.voiceToSpeech("Local command not exist");
+                        Log.d("ControllerCommands","Local command not exist");
                 }
 
                 if(LastLocalCommand.equals("salir")){

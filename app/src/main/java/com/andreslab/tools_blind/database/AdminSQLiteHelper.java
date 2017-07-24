@@ -16,14 +16,20 @@ public class AdminSQLiteHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        //config permissors
         sqLiteDatabase.execSQL("CREATE TABLE permisos (id INTEGER PRIMARY KEY, permiso TEXT, acceso INTEGER);"); //1 si, 0 no
-
+        //config email
+        sqLiteDatabase.execSQL("CREATE TABLE cuentas_de_correos (id INTEGER PRIMARY KEY, nombre TEXT, correo TEXT, pass TEXT);");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS permisos");
         sqLiteDatabase.execSQL("CREATE TABLE permisos (id INTEGER PRIMARY KEY, permiso TEXT, acceso INTEGER);");
+
+        //config email
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS cuentas_de_correos");
+        sqLiteDatabase.execSQL("CREATE TABLE cuentas_de_correos (id INTEGER PRIMARY KEY, nombre TEXT, correo TEXT, pass TEXT);");
 
     }
 }

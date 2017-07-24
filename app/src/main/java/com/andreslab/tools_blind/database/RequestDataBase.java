@@ -70,4 +70,12 @@ public class RequestDataBase {
         db.close();
         return lista_permisos;
     }
+
+
+
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    public void saveData_config_email(ArrayList<PermissionModel> lista_permisos){}
+    public void updateData_config_email(){}
+    //public ArrayList<PermissionModel> showData_config_email(){}
 }
