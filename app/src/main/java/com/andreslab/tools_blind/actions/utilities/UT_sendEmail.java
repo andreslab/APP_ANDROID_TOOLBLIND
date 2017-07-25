@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.andreslab.tools_blind.MainActivity;
+import com.andreslab.tools_blind.database.RequestDataBase;
+
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -33,13 +36,17 @@ public class UT_sendEmail extends AsyncTask<Void,Void,Void> {
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
 
+    public String[] datos_cuenta;
+
     //Class Constructor
-    public UT_sendEmail(Context context, String email, String subject, String message) {
+    public UT_sendEmail(Context context, String email, String subject, String message, String[] account) {
         //Initializing variables
         this.context = context;
         this.email = email;
         this.subject = subject;
         this.message = message;
+        this.datos_cuenta = new String[]{account[0],account[1]};
+
     }
 
     @Override
@@ -49,6 +56,7 @@ public class UT_sendEmail extends AsyncTask<Void,Void,Void> {
         //---progressDialog = ProgressDialog.show(context, "Sending message", "Please wait...", false, false);
     }
 
+
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
@@ -56,6 +64,7 @@ public class UT_sendEmail extends AsyncTask<Void,Void,Void> {
         //----progressDialog.dismiss();
         //Showing a success message
         Toast.makeText(context, "Message Sent", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -77,7 +86,7 @@ public class UT_sendEmail extends AsyncTask<Void,Void,Void> {
                     //Authenticating the password
                     protected PasswordAuthentication getPasswordAuthentication() {
                         //return new PasswordAuthentication(Config.EMAIL, Config.PASSWORD);
-                        return new PasswordAuthentication("jaimeandrade454@gmail.com", "interculturalidad");
+                        return new PasswordAuthentication(datos_cuenta[0], datos_cuenta[1]);
                     }
                 });
 
@@ -87,7 +96,7 @@ public class UT_sendEmail extends AsyncTask<Void,Void,Void> {
 
             //Setting sender address
             //mm.setFrom(new InternetAddress(Config.EMAIL));
-            mm.setFrom(new InternetAddress("jaimeandrade454@gmail.com"));
+            mm.setFrom(new InternetAddress(datos_cuenta[0]));
 
             //Adding receiver
             mm.addRecipient(Message.RecipientType.TO, new InternetAddress(email));

@@ -399,7 +399,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
                 Log.d("NUEVA LLAMADA", "execute");
-                if(parametros.containsKey("contacto")){
+                if(parametros.containsKey("contacto"))
+                {
                     Boolean isReal = false;
                     String num = "";
 
@@ -537,32 +538,49 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             }
             //::::::::::::::::::::::::::::::::::::::::::::::::::
-            if (ControllerCommands.GlobalCommands.equals("nuevo email")) {
-                String emisor = "";
+            if (ControllerCommands.GlobalCommands.equals("nuevo mail")) {
+
                 String receptor = "";
                 String asunto = "sin título";
                 String mensaje = "";
 
-                parametros.put("emisor","jaimeandrade454@gmail.com");
-                parametros.put("receptor","andres_j-a@hotmail.com");
-
-                if (parametros.containsKey("emisor") &&
-                        parametros.containsKey("receptor") &&
+                if (parametros.containsKey("contacto") &&
                         parametros.containsKey("mensaje")) {
 
-                    //emisor = parametros.get("emisor");//optener mail por nombre en a base de datos
-                    emisor = "jaimeandrade454@gmail.com";
-                    receptor = parametros.get("receptor");
-                    if(parametros.containsKey("asunto")){
-                        asunto = parametros.get("asunto");
+                    Boolean isReal = false;
+
+                    for(int i = 0; i < contactos.size(); i++){
+                        if(contactos.get(i).getName().equals(parametros.get("contacto"))){
+                            isReal = true;
+                            receptor = contactos.get(i).getEmail();
+                            mensaje = parametros.get("mensaje");
+                        }
                     }
-                    mensaje = parametros.get("mensaje");
+                    if(isReal == true){
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
+                                PackageManager.PERMISSION_GRANTED) {
+                            mp_positive.start();
 
-                    UT_sendEmail sm = new UT_sendEmail(MainActivity.this, receptor, asunto, mensaje);
-                    //Executing sendmail to send email
-                    sm.execute();
+                            String[] datos_cuenta = {cuenta.get(0).getEmail(),cuenta.get(0).getPass()};
+                            Log.d("NUEVO MAIL", "email: "+datos_cuenta[0]);
+                            Log.d("NUEVO MAIL", "pass: "+datos_cuenta[1]);
+                            UT_sendEmail sm = new UT_sendEmail(MainActivity.this, receptor, asunto, mensaje, datos_cuenta);
+                            //Executing sendmail to send email
+                            sm.execute();
+                            isReal = false;
+                            receptor = "";
+                            mensaje = "";
+                            Log.d("NUEVO EMAIL","mensaje enviado");
+                        }else{
+                            vts.voiceToSpeech("Not permissions");
+                        }
+                    }else{
+                        vts.voiceToSpeech("Contact not found");
+                    }
 
-                    Log.d("NUEVO EMAIL","mensaje enviado");
+
+
+
                 }
             }
 
@@ -588,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         }
                     }
                     if(isReal == true){
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) ==
                                 PackageManager.PERMISSION_GRANTED) {
                             mp_positive.start();
 
@@ -644,12 +662,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             }
 
-
-
-            //::::::::::::::::::::::configuración::::::::::::::::::
-            if (ControllerCommands.GlobalCommands.equals("configurar email")) {
-
-            }
         }
 
 

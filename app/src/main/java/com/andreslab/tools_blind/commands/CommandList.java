@@ -14,7 +14,7 @@ public class CommandList {
             "nueva llamada",
             "nueva traducción",
             "nueva alarma",
-            "nuevo email",
+            "nuevo mail",
             "nueva nota",
             "nuevo mensaje",
             /*:::::::::::::::::::::*/
@@ -41,7 +41,7 @@ public class CommandList {
         LocalCommands.put("nueva llamada", new String[]{"contacto","salir"});
         LocalCommands.put("nueva traducción", new String[]{"ingles a español", "español a ingles","salir"});
         LocalCommands.put("nueva alarma", new String[]{"hora","salir"});
-        LocalCommands.put("nuevo email", new String[]{"emisor","receptor","asunto","mensaje","salir"});
+        LocalCommands.put("nuevo mail", new String[]{"contacto","asunto","mensaje","salir"});
         LocalCommands.put("nueva nota", new String[]{"tema", "grabar","salir"});
         LocalCommands.put("nuevo mensaje", new String[]{"contacto", "mensaje","salir"});
 
