@@ -5,19 +5,26 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.andreslab.tools_blind.MainActivity;
+import com.andreslab.tools_blind.actions.VoiceToSpeech;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by macbookpro on 7/18/17.
  */
 
-public class DigitalBrailleView extends View {
+public class DigitalBrailleView extends View{
     public Hashtable<String, int[]> tablero = new Hashtable<String, int[]>();
 
 
@@ -37,6 +44,9 @@ public class DigitalBrailleView extends View {
     int spacing_border_y;
     int spacing_border_x;
 
+    int order = 0;
+    String[] letters = {"","a","b","c","d","e","f","g","h","i","j","k","l","m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","y"};
+
 
 
     /*float[] x = {(spacing_x * 2)+160+spacing_border_x,130};
@@ -47,6 +57,8 @@ public class DigitalBrailleView extends View {
 
     private Activity _activity;
     private Context _context;
+
+    VoiceToSpeech vts;
 
     Boolean touch_circle = false;
 /*
@@ -66,47 +78,54 @@ public class DigitalBrailleView extends View {
     float[] f3_circle4 = {((spacing_x * 4)+(160 * 3))+spacing_border_x  ,  ((spacing_y * 3)+ (160 * 2)) + spacing_border_y };
 
 */
+    private Timer mTimer1;
+    private TimerTask mTt1;
+    private Handler mTimerHandler = new Handler();
+
     public DigitalBrailleView(Context context, Activity activity) {
         super(context);
 
         _context = context;
         _activity = activity;
+        vts = new VoiceToSpeech(context);
 
-        tablero.put("a",new int[12]);
-        tablero.put("b",new int[12]);
-        tablero.put("c",new int[12]);
-        tablero.put("d",new int[12]);
-        tablero.put("e",new int[12]);
-        tablero.put("f",new int[12]);
-        tablero.put("g",new int[12]);
-        tablero.put("h",new int[12]);
-        tablero.put("i",new int[12]);
-        tablero.put("j",new int[12]);
-        tablero.put("k",new int[12]);
-        tablero.put("l",new int[12]);
-        tablero.put("m",new int[12]);
-        tablero.put("n",new int[12]);
-        tablero.put("ñ",new int[12]);
-        tablero.put("o",new int[12]);
-        tablero.put("p",new int[12]);
-        tablero.put("q",new int[12]);
-        tablero.put("r",new int[12]);
-        tablero.put("s",new int[12]);
-        tablero.put("t",new int[12]);
-        tablero.put("u",new int[12]);
-        tablero.put("v",new int[12]);
-        tablero.put("w",new int[12]);
-        tablero.put("x",new int[12]);
-        tablero.put("y",new int[12]);
-        tablero.put("z",new int[12]);
-        tablero.put("á",new int[12]);
-        tablero.put("é",new int[12]);
-        tablero.put("í",new int[12]);
-        tablero.put("ó",new int[12]);
-        tablero.put("ú",new int[12]);
 
+        startTimer();
 
     }
+    //::::::::::::::::::::::::::::::::::::
+    private void stopTimer(){
+        if(mTimer1 != null){
+            mTimer1.cancel();
+            mTimer1.purge();
+        }
+    }
+
+
+
+    private void startTimer(){
+        mTimer1 = new Timer();
+        mTt1 = new TimerTask() {
+            public void run() {
+                mTimerHandler.post(new Runnable() {
+                    public void run(){
+                        //TODO
+                        if(order < letters.length) {
+                            order++;
+                            vts.voiceToSpeech("letter " + letters[order]);
+                        }else{
+                            stopTimer();
+                        }
+                    }
+                });
+            }
+        };
+
+        mTimer1.schedule(mTt1, 1, 25000);
+    }
+
+
+    //::::::::::::::::::::::::::::::::::::
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -221,7 +240,10 @@ public class DigitalBrailleView extends View {
                 invalidate();
             }*/
 
-            patron_position = patrones(colection_position, "o");
+
+
+
+            patron_position = patrones(colection_position, letters[order]);
 
 
             for(int i = 0; i<patron_position.size(); i++){
@@ -494,4 +516,6 @@ public class DigitalBrailleView extends View {
         }
 
     }
+
+
 }
