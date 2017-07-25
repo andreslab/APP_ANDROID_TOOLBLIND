@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             vibrator.cancel();
         }else {
             Log.d("ESCUCHANDO ARGUMENTO", "no existe un subcomando que esté activo");
-            vts.voiceToSpeech("Sorry, not found local command listening");
+            vts.voiceToSpeech("Sorry, \n\nnot found local command listening");
             validateOnLongPress = false;
             String listParameters = "";
             for (int i = 0; i <= ControllerCommands.parametersLocalCommand.size() - 1; i++) {
@@ -252,11 +252,19 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                         Intent f = new Intent(MainActivity.this, CameraActivity.class);
                         startActivity(f);
+                        ControllerCommands.GlobalCommands = "";
+                        ControllerCommands.isListeningArgument = false;
+                        ControllerCommands.GlobalCommandSelected = false;
+                        ControllerCommands.LastLocalCommand = "";
                         break;
                     case "nueva práctica":
 
                         Intent d = new Intent(MainActivity.this, DigitalBraille.class);
                         startActivity(d);
+                        ControllerCommands.GlobalCommands = "";
+                        ControllerCommands.isListeningArgument = false;
+                        ControllerCommands.GlobalCommandSelected = false;
+                        ControllerCommands.LastLocalCommand = "";
                         break;
 
                     default:
@@ -386,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                             num = "";
                             startActivity(e);
                         }else{
-                            vts.voiceToSpeech("Not permissions");
+                            vts.voiceToSpeech("Not \npermissions");
                         }
                     }else{
                         mp_negative.start();
@@ -538,10 +546,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                             mensaje = "";
                             Log.d("NUEVO EMAIL","mensaje enviado");
                         }else{
-                            vts.voiceToSpeech("Not permissions");
+                            vts.voiceToSpeech("Not \npermissions");
                         }
                     }else{
-                        vts.voiceToSpeech("Contact not found");
+                        vts.voiceToSpeech("Contact \nnot found");
                     }
 
 
@@ -587,10 +595,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                             num = "";
                             msm= "";
                         }else{
-                            vts.voiceToSpeech("Not permissions");
+                            vts.voiceToSpeech("Not \npermissions");
                         }
                     }else{
-                        vts.voiceToSpeech("Contact noy found");
+                        vts.voiceToSpeech("Contact \nnoy found");
                     }
 
 

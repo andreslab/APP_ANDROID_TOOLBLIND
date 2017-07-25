@@ -100,7 +100,7 @@ public class ControllerCommands extends CommandList {
                     isListeningArgument = false;
                     GlobalCommandSelected = false;
                     GlobalCommands = "";
-                    vts.voiceToSpeech("exit of command "+GlobalCommands);
+                    vts.voiceToSpeech("exit of command \n\n"+GlobalCommands);
 
                 }
             }
@@ -108,7 +108,7 @@ public class ControllerCommands extends CommandList {
             else{
                 if(c.equals("último comando") && isListeningArgument){
                     //proporciona el ultimo comando local usado
-                    vts.voiceToSpeech("The actual local command is "+ LastLocalCommand);
+                    vts.voiceToSpeech("The actual local command is \n\n"+ LastLocalCommand);
                 }else if (c.equals("omitir")){
                     mp_positive.start();
                     isListeningArgument = false;

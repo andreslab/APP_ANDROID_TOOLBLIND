@@ -112,9 +112,11 @@ public class DigitalBrailleView extends View{
                         //TODO
                         if(order < letters.length) {
                             order++;
-                            vts.voiceToSpeech("letter " + letters[order]);
+                            vts.voiceToSpeech("letter \n\n" + letters[order]);
                         }else{
+                            vts.voiceToSpeech("Finish lesson");
                             stopTimer();
+
                         }
                     }
                 });
