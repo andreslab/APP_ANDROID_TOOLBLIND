@@ -28,7 +28,7 @@ public class DigitalBrailleView extends View{
     public Hashtable<String, int[]> tablero = new Hashtable<String, int[]>();
 
 
-    int radio = 80;
+    int radio = 120;
     int circulo = -1;
 
     int ancho;
@@ -139,31 +139,31 @@ public class DigitalBrailleView extends View{
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
 
-        spacing_x = (ancho - (160 * 2) )/3;
-        spacing_y = (alto - (160 * 3) )/4;
+        spacing_x = (ancho - ((radio*2) * 2) )/3;
+        spacing_y = (alto - ((radio*2) * 3) )/4;
 
-        spacing_total_y = (160 * 3) + (spacing_y * 2); //espacio total en y del grafico
-        spacing_total_x = (160 * 2) + (spacing_x); // espacio total en x del grafico
+        spacing_total_y = ((radio*2) * 3) + (spacing_y * 2); //espacio total en y del grafico
+        spacing_total_x = ((radio*2) * 2) + (spacing_x); // espacio total en x del grafico
 
 
         //spacing_border_y = (alto - spacing_total_y )/2;
         //spacing_border_x = (ancho - spacing_total_x )/2;
 
 
-        float[] f1_circle1 = {spacing_x + 160/2, spacing_y};
-        float[] f1_circle2 = {spacing_x + 160 + spacing_x + 160/2 , spacing_y };
-        //float[] f1_circle3 = {((spacing_x * 3)+ (160 * 2))+spacing_border_x  ,  spacing_y + spacing_border_y };
-        //float[] f1_circle4 = {((spacing_x * 4)+(160 * 3))+spacing_border_x  ,  spacing_y + spacing_border_y };
+        float[] f1_circle1 = {spacing_x + (radio*2)/2, spacing_y};
+        float[] f1_circle2 = {spacing_x + (radio*2) + spacing_x + (radio*2)/2 , spacing_y };
+        //float[] f1_circle3 = {((spacing_x * 3)+ ((radio*2) * 2))+spacing_border_x  ,  spacing_y + spacing_border_y };
+        //float[] f1_circle4 = {((spacing_x * 4)+((radio*2) * 3))+spacing_border_x  ,  spacing_y + spacing_border_y };
 
-        float[] f2_circle1 = {spacing_x  + 160/2,  spacing_y + 160 + spacing_y + 160/2};
-        float[] f2_circle2 = {spacing_x+160+spacing_x + 160/2 ,  spacing_y + 160 + spacing_y  + 160/2};
-        //float[] f2_circle3 = {((spacing_x * 3)+ (160 * 2))+spacing_border_x  ,  (spacing_y * 2) + 160 + spacing_border_y };
-        //float[] f2_circle4 = {((spacing_x * 4)+(160 * 3))+spacing_border_x  ,  (spacing_y * 2) + 160 + spacing_border_y };
+        float[] f2_circle1 = {spacing_x  + (radio*2)/2,  spacing_y + (radio*2) + spacing_y + (radio*2)/2};
+        float[] f2_circle2 = {spacing_x+(radio*2)+spacing_x + (radio*2)/2 ,  spacing_y + (radio*2) + spacing_y  + (radio*2)/2};
+        //float[] f2_circle3 = {((spacing_x * 3)+ ((radio*2) * 2))+spacing_border_x  ,  (spacing_y * 2) + (radio*2) + spacing_border_y };
+        //float[] f2_circle4 = {((spacing_x * 4)+((radio*2) * 3))+spacing_border_x  ,  (spacing_y * 2) + (radio*2) + spacing_border_y };
 
-        float[] f3_circle1 = {spacing_x  + 160/2,  ((spacing_y * 2)+ (160 * 2)) + spacing_y + 160/2};
-        float[] f3_circle2 = {spacing_x +160+spacing_x  + 160/2 ,  ((spacing_y * 2)+ (160 * 2)) + spacing_y + 160/2};
-        //float[] f3_circle3 = {((spacing_x * 3)+ (160 * 2))+spacing_border_x  ,  ((spacing_y * 3)+ (160 * 2)) + spacing_border_y };
-        //float[] f3_circle4 = {((spacing_x * 4)+(160 * 3))+spacing_border_x  ,  ((spacing_y * 3)+ (160 * 2)) + spacing_border_y };
+        float[] f3_circle1 = {spacing_x  + (radio*2)/2,  ((spacing_y * 2)+ ((radio*2) * 2)) + spacing_y + (radio*2)/2};
+        float[] f3_circle2 = {spacing_x +(radio*2)+spacing_x  + (radio*2)/2 ,  ((spacing_y * 2)+ ((radio*2) * 2)) + spacing_y + (radio*2)/2};
+        //float[] f3_circle3 = {((spacing_x * 3)+ ((radio*2) * 2))+spacing_border_x  ,  ((spacing_y * 3)+ ((radio*2) * 2)) + spacing_border_y };
+        //float[] f3_circle4 = {((spacing_x * 4)+((radio*2) * 3))+spacing_border_x  ,  ((spacing_y * 3)+ ((radio*2) * 2)) + spacing_border_y };
 
         colection_position.add(f1_circle1);
         colection_position.add(f1_circle2);
@@ -182,30 +182,30 @@ public class DigitalBrailleView extends View{
 
 
         //fila1
-        canvas.drawCircle(f1_circle1[0] , f1_circle1[1],80, paint);
-        canvas.drawCircle(f1_circle2[0] , f1_circle2[1],80, paint);
-        //canvas.drawCircle(f1_circle3[0] , f1_circle3[1],80, paint);
-        //canvas.drawCircle(f1_circle4[0] , f1_circle4[1],80, paint);
+        canvas.drawCircle(f1_circle1[0] , f1_circle1[1],radio, paint);
+        canvas.drawCircle(f1_circle2[0] , f1_circle2[1],radio, paint);
+        //canvas.drawCircle(f1_circle3[0] , f1_circle3[1],radio, paint);
+        //canvas.drawCircle(f1_circle4[0] , f1_circle4[1],radio, paint);
 
         //fila2
-        canvas.drawCircle(f2_circle1[0] , f2_circle1[1],80, paint);
-        canvas.drawCircle(f2_circle2[0] , f2_circle2[1],80, paint);
-        //canvas.drawCircle(f2_circle3[0] , f2_circle3[1],80, paint);
-        //canvas.drawCircle(f2_circle4[0] , f2_circle4[1],80, paint);
+        canvas.drawCircle(f2_circle1[0] , f2_circle1[1],radio, paint);
+        canvas.drawCircle(f2_circle2[0] , f2_circle2[1],radio, paint);
+        //canvas.drawCircle(f2_circle3[0] , f2_circle3[1],radio, paint);
+        //canvas.drawCircle(f2_circle4[0] , f2_circle4[1],radio, paint);
 
         //fila3
-        canvas.drawCircle(f3_circle1[0] , f3_circle1[1],80, paint);
-        canvas.drawCircle(f3_circle2[0] , f3_circle2[1],80, paint);
-        //canvas.drawCircle(f3_circle3[0] , f3_circle3[1],80, paint);
-        //canvas.drawCircle(f3_circle4[0] , f3_circle4[1],80, paint);
+        canvas.drawCircle(f3_circle1[0] , f3_circle1[1],radio, paint);
+        canvas.drawCircle(f3_circle2[0] , f3_circle2[1],radio, paint);
+        //canvas.drawCircle(f3_circle3[0] , f3_circle3[1],radio, paint);
+        //canvas.drawCircle(f3_circle4[0] , f3_circle4[1],radio, paint);
     }
 
     public boolean onTouchEvent(MotionEvent evento){
 
 
 
-        float[] x = {(spacing_x * 2)+160+spacing_border_x,130};
-        float[] y = {(spacing_y * 2) + 160 + spacing_border_y, 100};
+        float[] x = {(spacing_x * 2)+(radio*2)+spacing_border_x,130};
+        float[] y = {(spacing_y * 2) + (radio*2) + spacing_border_y, 100};
 
         float getx = evento.getX();
         float gety = evento.getY();
