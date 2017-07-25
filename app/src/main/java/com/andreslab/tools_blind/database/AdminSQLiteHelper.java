@@ -18,8 +18,11 @@ public class AdminSQLiteHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         //config permissors
         sqLiteDatabase.execSQL("CREATE TABLE permisos (id INTEGER PRIMARY KEY, permiso TEXT, acceso INTEGER);"); //1 si, 0 no
-        //config email
-        sqLiteDatabase.execSQL("CREATE TABLE cuentas_de_correos (id INTEGER PRIMARY KEY, nombre TEXT, correo TEXT, pass TEXT);");
+        //config contacto
+        sqLiteDatabase.execSQL("CREATE TABLE contactos (id INTEGER PRIMARY KEY, nombre TEXT, telefono TEXT, correo TEXT);");
+        //config cuenta de correo
+        sqLiteDatabase.execSQL("CREATE TABLE cuenta (id INTEGER PRIMARY KEY, email TEXT, pass TEXT);");
+
     }
 
     @Override
@@ -27,9 +30,12 @@ public class AdminSQLiteHelper extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS permisos");
         sqLiteDatabase.execSQL("CREATE TABLE permisos (id INTEGER PRIMARY KEY, permiso TEXT, acceso INTEGER);");
 
-        //config email
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS cuentas_de_correos");
-        sqLiteDatabase.execSQL("CREATE TABLE cuentas_de_correos (id INTEGER PRIMARY KEY, nombre TEXT, correo TEXT, pass TEXT);");
+        //config contacto
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS contactos");
+        sqLiteDatabase.execSQL("CREATE TABLE contactos (id INTEGER PRIMARY KEY, nombre TEXT, telefono TEXT, correo TEXT);");
 
+        //config cuenta
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS cuenta");
+        sqLiteDatabase.execSQL("CREATE TABLE cuenta (id INTEGER PRIMARY KEY, email TEXT, pass TEXT);");
     }
 }

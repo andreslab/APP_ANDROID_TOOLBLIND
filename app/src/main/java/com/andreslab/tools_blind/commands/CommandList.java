@@ -16,6 +16,7 @@ public class CommandList {
             "nueva alarma",
             "nuevo email",
             "nueva nota",
+            "nuevo mensaje",
             /*:::::::::::::::::::::*/
             "nuevo diagrama",
             "nueva práctica", //braille digital
@@ -42,6 +43,8 @@ public class CommandList {
         LocalCommands.put("nueva alarma", new String[]{"hora","salir"});
         LocalCommands.put("nuevo email", new String[]{"emisor","receptor","asunto","mensaje","salir"});
         LocalCommands.put("nueva nota", new String[]{"tema", "grabar","salir"});
+        LocalCommands.put("nuevo mensaje", new String[]{"contacto", "mensaje","salir"});
+
         //:::::::::::educativa::::::::::::
         LocalCommands.put("nuevo diagrama", new String[]{"crear título", "crear división","sección","texto", "item","resumen","terminar edición"}); //sección son los niveles de arriba hacia abajo del mapa e item es la subdivision por cada sección
         LocalCommands.put("nueva práctica", new String[]{"iniciar","reiniciar","salir"});

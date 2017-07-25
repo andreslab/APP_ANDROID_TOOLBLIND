@@ -1,20 +1,48 @@
 package com.andreslab.tools_blind;
 
 import android.Manifest;
+import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.andreslab.tools_blind.database.RequestDataBase;
+import com.andreslab.tools_blind.models.AccountModel;
+import com.andreslab.tools_blind.models.ContactsModel;
 import com.andreslab.tools_blind.models.PermissionModel;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +73,47 @@ public class PermissionsActivity extends AppCompatActivity {
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_SMS };
 
+    public static final int PICK_CONTACT_REQUEST = 1 ;
+    private Uri contactUri;
+    ImageButton btnActionAddContact;
+    ListView listcontact;
+    ArrayAdapter<String> adaptador;
+    ArrayList<ContactsModel> lista_contactos = new ArrayList<ContactsModel>();
+    ArrayList<AccountModel> lista_cuenta = new ArrayList<AccountModel>();
+
+    ArrayList<String> elementos = new ArrayList<String>();
+    int index_contact = 0; // el primero es support
+    EditText email_data;
+    EditText pass_data;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permissions);
         init_permissions();
+
+        elementos.add("soporte: 0983299095");
+
+
+        listcontact = (ListView)findViewById(R.id.listcontact);
+        adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,elementos);
+
+
+        // Bind to our new adapter.
+
+        listcontact.setAdapter(adaptador);
+
+        btnActionAddContact = (ImageButton)findViewById(R.id.btnaddcontact);
+        btnActionAddContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addcontact();
+            }
+        });
+        email_data = (EditText) findViewById(R.id.editemail);
+        pass_data = (EditText) findViewById(R.id.editpass);
     }
 
 
@@ -78,8 +141,9 @@ public class PermissionsActivity extends AppCompatActivity {
         //save in database
         RequestDataBase rdb = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
         rdb.saveData_permissions(name_permissions);
-        Intent i = new Intent(PermissionsActivity.this, MainActivity.class);
-        startActivity(i);
+
+        //Intent i = new Intent(PermissionsActivity.this, MainActivity.class);
+        //startActivity(i);
 
     }
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -102,10 +166,38 @@ public class PermissionsActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.configurate_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.save_data:
+                if(email_data.getText().toString().length()>5 && email_data.getText().toString().contains("@") && pass_data.getText().toString().length() > 3)
+                {
+                    RequestDataBase db = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
+                    db.saveData_contacts(lista_contactos);
+                    lista_cuenta.add(new AccountModel(0,email_data.getText().toString(), pass_data.getText().toString()));
+                    RequestDataBase db2 = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
+                    db2.saveData_account(lista_cuenta);
+                Intent i = new Intent(PermissionsActivity.this, MainActivity.class);
+                startActivity(i);
+                return true;
+                }
+                else{
+                    Toast.makeText(this, "Faltan campos", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
 
-
-
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -190,7 +282,206 @@ public class PermissionsActivity extends AppCompatActivity {
         post_request_permissions();
 
     }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                /*
+                Capturar el valor de la Uri
+                 */
+                contactUri = intent.getData();
+                //Log.d("PERMISSION",".."+contactUri.toString());
+                elementos.add(getName(contactUri).toUpperCase()+" | Teléfono: "+ getPhone(contactUri)+"\nCorreo: "+getEmail(contactUri));
+                lista_contactos.add(new ContactsModel(
+                        index_contact,
+                        getName(contactUri).toLowerCase(),
+                        getPhone(contactUri),
+                        getEmail(contactUri)
+                ));
+                index_contact++;
+                reloadAllData();
+                /*
+                Procesar la Uri
+                 */
+                //renderContact(contactUri);
+            }
+        }
+    }
+
+    private void addcontact(){
+        RequestDataBase rdb = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
+        rdb.saveData_permissions(name_permissions);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==
+                PackageManager.PERMISSION_GRANTED) {
+            Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        /*
+        Iniciar la actividad esperando respuesta a través
+        del canal PICK_CONTACT_REQUEST
+         */
+            startActivityForResult(i, PICK_CONTACT_REQUEST);
+        }
+    }
+
+    private void reloadAllData(){
+        // get new modified random data
+
+        // update data in our adapter
+
+        // fire the event
+        adaptador.notifyDataSetChanged();
+    }
+
+    private String getPhone(Uri uri) {
+        /*
+        Variables temporales para el id y el teléfono
+         */
+        String id = null;
+        String phone = null;
+
+        /************* PRIMERA CONSULTA ************/
+        /*
+        Obtener el _ID del contacto
+         */
+        Cursor contactCursor = getContentResolver().query(
+                uri,
+                new String[]{Contacts._ID},
+                null,
+                null,
+                null);
+
+
+        if (contactCursor.moveToFirst()) {
+            id = contactCursor.getString(0);
+        }
+        contactCursor.close();
+
+        /************* SEGUNDA CONSULTA ************/
+        /*
+        Sentencia WHERE para especificar que solo deseamos
+        números de telefonía móvil
+         */
+        String selectionArgs =
+                Phone.CONTACT_ID + " = ? AND " +
+                        Phone.TYPE+"= " +
+                        Phone.TYPE_MOBILE;
+
+        /*
+        Obtener el número telefónico
+         */
+        Cursor phoneCursor = getContentResolver().query(
+                Phone.CONTENT_URI,
+                new String[] { Phone.NUMBER },
+                selectionArgs,
+                new String[] { id },
+                null
+        );
+        if (phoneCursor.moveToFirst()) {
+            phone = phoneCursor.getString(0);
+        }
+        phoneCursor.close();
+
+        return phone;
+    }
+
+    private String getName(Uri uri) {
+
+        /*
+        Valor a retornar
+         */
+        String name = null;
+
+         /*
+        Obtener una instancia del Content Resolver
+         */
+        ContentResolver contentResolver = getContentResolver();
+
+        /*
+        Consultar el nombre del contacto
+         */
+        Cursor c = contentResolver.query(
+                uri,
+                new String[]{Contacts.DISPLAY_NAME},
+                null,
+                null,
+                null);
+
+        if(c.moveToFirst()){
+            name = c.getString(0);
+        }
+
+        /*
+        Cerramos el cursor
+         */
+        c.close();
+
+        return name;
+    }
+
+
+    private String getEmail(Uri uri) {
+
+        /*
+        Variables temporales para el id y el teléfono
+         */
+        String id = null;
+        String email = null;
+
+        /************* PRIMERA CONSULTA ************/
+        /*
+        Obtener el _ID del contacto
+         */
+        Cursor contactCursor = getContentResolver().query(
+                uri,
+                new String[]{Contacts._ID},
+                null,
+                null,
+                null);
+
+
+        if (contactCursor.moveToFirst()) {
+            id = contactCursor.getString(0);
+        }
+        contactCursor.close();
+
+        /************* SEGUNDA CONSULTA ************/
+        /*
+        Sentencia WHERE para especificar que solo deseamos
+        números de telefonía móvil
+         */
+        String selectionArgs =
+                Email.CONTACT_ID + " = ? AND " +
+                        Email.TYPE+"= " +
+                        Email.TYPE_HOME;
+
+        /*
+        Obtener el número telefónico
+         */
+        Cursor emailCursor = getContentResolver().query(
+                Email.CONTENT_URI,
+                new String[] {Email.ADDRESS },
+                selectionArgs,
+                new String[] { id },
+                null
+        );
+        if (emailCursor.moveToFirst()) {
+            email = emailCursor.getString(0);
+        }
+        emailCursor.close();
+
+        if(email != null){
+            return email;
+        }else{
+            email = "none";
+            return email;
+        }
+
+
+    }
+
 }
+
+
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -225,6 +516,7 @@ public class PermissionsActivity extends AppCompatActivity {
 //import android.support.annotation.NonNull;
 //import android.text.TextUtils;
 //import android.text.method.ScrollingMovementMethod;
+//import android.util.Log;
 //import android.view.View;
 //import android.view.ViewGroup;
 //import android.widget.Button;
@@ -235,6 +527,8 @@ public class PermissionsActivity extends AppCompatActivity {
 //import java.util.ArrayList;
 //import java.util.Arrays;
 //import java.util.List;
+//
+//import javax.mail.internet.MimeMessage;
 //
 //import pub.devrel.easypermissions.AfterPermissionGranted;
 //import pub.devrel.easypermissions.EasyPermissions;

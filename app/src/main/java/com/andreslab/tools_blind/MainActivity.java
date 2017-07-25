@@ -14,13 +14,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.andreslab.tools_blind.actions.VoiceToSpeech;
 import com.andreslab.tools_blind.actions.utilities.UT_sendEmail;
 import com.andreslab.tools_blind.commands.ControllerCommands;
+import com.andreslab.tools_blind.database.RequestDataBase;
+import com.andreslab.tools_blind.models.AccountModel;
+import com.andreslab.tools_blind.models.ContactsModel;
 import com.andreslab.tools_blind.view.MainView;
 
 import java.util.ArrayList;
@@ -53,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     Boolean validateOnLongPress;
     Hashtable<String,String> parametros = new Hashtable<String,String>();
 
+    public static ArrayList<ContactsModel> contactos = new ArrayList<ContactsModel>();
+    public static ArrayList<AccountModel> cuenta = new ArrayList<AccountModel>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +80,19 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
 
         //parametros.put("mensaje", "hola");
-
+        requestDataDB();
 
     }
+
+    private void requestDataDB(){
+        RequestDataBase rdb_contacts = new RequestDataBase(MainActivity.this, MainActivity.this);
+        contactos = rdb_contacts.showData_contacts();
+
+        RequestDataBase rdb_account = new RequestDataBase(MainActivity.this, MainActivity.this);
+        cuenta = rdb_account.showData_account();
+    }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -188,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         mp_positive.start();
                         //parametros del comando local activo
                         //vts.voiceToSpeech("save Parameters success of local command "+ControllerCommands.LastLocalCommand);
+                        strSpeech = strSpeech.toLowerCase();
                         parametros.put(ControllerCommands.LastLocalCommand,strSpeech);
                         Log.d("PARAMETRO GUARDADO", parametros.toString());
                         ControllerCommands.isListeningArgument = false;
@@ -381,14 +400,34 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
                 Log.d("NUEVA LLAMADA", "execute");
                 if(parametros.containsKey("contacto")){
+                    Boolean isReal = false;
+                    String num = "";
 
-                    String tel = parametros.get("contacto");
+                    for(int i = 0; i < contactos.size(); i++){
+                        if(contactos.get(i).getName().equals(parametros.get("contacto"))){
+                            isReal = true;
+                            num = contactos.get(i).getPhone();
 
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
-                            PackageManager.PERMISSION_GRANTED) {
-                        Intent e = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
-                        startActivity(e);
+                        }
                     }
+                    if(isReal == true){
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
+                                PackageManager.PERMISSION_GRANTED) {
+                            mp_positive.start();
+                            Intent e = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + num));
+                            isReal = false;
+                            num = "";
+                            startActivity(e);
+                        }else{
+                            vts.voiceToSpeech("Not permissions");
+                        }
+                    }else{
+                        mp_negative.start();
+                    }
+
+
+
+
                 }
             }
             //::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -528,9 +567,57 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
-            if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
+            if (ControllerCommands.GlobalCommands.equals("nuevo mensaje")) {
+            /*
+            Creando nuestro gestor de mensajes
+            */
+                SmsManager smsManager = SmsManager.getDefault();
 
-            }
+
+                if(parametros.containsKey("contacto") && parametros.containsKey("mensaje")){
+                    Boolean isReal = false;
+                    String num = "";
+                    String msm = "";
+
+                    for(int i = 0; i < contactos.size(); i++){
+                        if(contactos.get(i).getName().equals(parametros.get("contacto"))){
+                            isReal = true;
+                            num = contactos.get(i).getPhone();
+                            msm = parametros.get("mensaje");
+
+                        }
+                    }
+                    if(isReal == true){
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
+                                PackageManager.PERMISSION_GRANTED) {
+                            mp_positive.start();
+
+                            smsManager.sendTextMessage(
+                                    num,
+                                    null,
+                                    msm,
+                                    null,
+                                    null);
+
+                            Toast.makeText(this, "Mensaje Enviado", Toast.LENGTH_LONG).show();
+                            num = "";
+                            msm= "";
+                        }else{
+                            vts.voiceToSpeech("Not permissions");
+                        }
+                    }else{
+                        vts.voiceToSpeech("Contact noy found");
+                    }
+
+
+
+
+                    }
+
+                }
+
+
+
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nuevo diagrama")) {
