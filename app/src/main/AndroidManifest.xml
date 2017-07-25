@@ -37,7 +37,7 @@
             android:theme="@style/themeWithoutActionbar"/>
         <activity android:name=".CameraActivity" />
         <activity android:name=".DigitalBraille" />
-        <receiver android:name=".TestActivity" />
+        <receiver android:name=".AlarmActivity" />
 
     </application>
 

@@ -277,18 +277,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     }
                 }
 
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
-                if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
-                    switch (ControllerCommands.LastLocalCommand) {
 
-                        case "contacto":
-                            VoiceToSpeech vs = new VoiceToSpeech(MainActivity.this);
-                            vs.voiceToSpeech("contact new");
-                            break;
-
-                        default:
-                    }
-                }
                 //::::::::::::::::::::::::::::::::::::::::::::::::::
                 if (ControllerCommands.GlobalCommands.equals("nueva traducción")) {
                     switch (ControllerCommands.LastLocalCommand) {
@@ -304,29 +293,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     }
                 }
 
-
-
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
-                if (ControllerCommands.GlobalCommands.equals("nueva email")) {
-                    switch (ControllerCommands.LastLocalCommand) {
-
-                        case "emisor":
-
-
-                            break;
-                        case "receptor":
-
-                            break;
-                        case "asunto":
-
-                            break;
-                        case "mensaje":
-
-                            break;
-
-                        default:
-                    }
-                }
 
                 //::::::::::::::::::::::::::::::::::::::::::::::::::
                 if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
@@ -445,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 PendingIntent alarmIntent;
 
                 alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                Intent intent = new Intent(MainActivity.this, AlarmActivity.class);
                 alarmIntent = PendingIntent.getBroadcast(MainActivity.this, ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                 Calendar calendar = Calendar.getInstance();
 

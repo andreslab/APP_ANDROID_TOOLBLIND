@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.andreslab.tools_blind.TestActivity">
+    tools:context="com.andreslab.tools_blind.AlarmActivity">
 
 </android.support.constraint.ConstraintLayout>
