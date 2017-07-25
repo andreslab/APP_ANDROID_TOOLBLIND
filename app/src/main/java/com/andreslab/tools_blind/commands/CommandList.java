@@ -37,7 +37,7 @@ public class CommandList {
         //::::::::::utilidades:::::::::::
         LocalCommands.put("nueva foto", new String[]{"tomar foto", "guardar foto", "salir"});
         LocalCommands.put("nueva operación", new String[]{"-","salir"});
-        LocalCommands.put("nueva llamada", new String[]{"contacto","teléfono","salir"});
+        LocalCommands.put("nueva llamada", new String[]{"contacto","salir"});
         LocalCommands.put("nueva traducción", new String[]{"ingles a español", "español a ingles","salir"});
         LocalCommands.put("nueva alarma", new String[]{"hora","salir"});
         LocalCommands.put("nuevo email", new String[]{"emisor","receptor","asunto","mensaje","salir"});

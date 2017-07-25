@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.andreslab.tools_blind.CameraActivity;
+import com.andreslab.tools_blind.MainActivity;
+import com.andreslab.tools_blind.R;
 import com.andreslab.tools_blind.actions.VoiceToSpeech;
 import com.andreslab.tools_blind.actions.utilities.UT_newPhoto;
 import com.andreslab.tools_blind.models.LocalCommandsModel;
@@ -34,6 +37,9 @@ public class ControllerCommands extends CommandList {
     Context context;
     CommandList comandlist = new CommandList();
 
+    MediaPlayer mp_positive;
+    MediaPlayer mp_negative;
+
     VoiceToSpeech vts;
 
     public ControllerCommands(Context ctx){
@@ -44,6 +50,8 @@ public class ControllerCommands extends CommandList {
         context = ctx;
         vts = new VoiceToSpeech(this.context);
 
+        mp_positive = MediaPlayer.create(ctx,R.raw.alert_positive);
+        mp_negative = MediaPlayer.create(ctx,R.raw.alert_negative);
 
     }
 
@@ -57,9 +65,13 @@ public class ControllerCommands extends CommandList {
                 GlobalCommandSelected = true;
                 isListeningArgument = false;
                 LastLocalCommand = "";
+                mp_positive.start();
+
             }else{
+                mp_negative.start();
                 vts.voiceToSpeech("Exist a global command");
                 //ya existe un comando global ejecutandose
+
             }
             return commandType;
         }else{
@@ -71,6 +83,7 @@ public class ControllerCommands extends CommandList {
                     //se guarda comandos locales del comando global
                     parametersLocalCommand.add(comandlist.LocalCommands.get(GlobalCommands)[i]);
                     if(comandlist.LocalCommands.get(GlobalCommands)[i].equals(LastLocalCommand)){
+                        mp_positive.start();
                         Log.d("COMANDOS LOCALES", "EL COMANDO EXISTE");
                         listCommands.add(LastLocalCommand);
                         isListeningArgument = true;
@@ -78,10 +91,12 @@ public class ControllerCommands extends CommandList {
                 }
                 if(isListeningArgument == false){
                         //vts.voiceToSpeech("Local command not exist");
-                        Log.d("ControllerCommands","Local command not exist");
+                        mp_negative.start();
+                        Log.d("COMANDOS LOCALES","Local command not exist");
                 }
 
                 if(LastLocalCommand.equals("salir")){
+
                     isListeningArgument = false;
                     GlobalCommandSelected = false;
                     GlobalCommands = "";
@@ -95,12 +110,14 @@ public class ControllerCommands extends CommandList {
                     //proporciona el ultimo comando local usado
                     vts.voiceToSpeech("The actual local command is "+ LastLocalCommand);
                 }else if (c.equals("omitir")){
+                    mp_positive.start();
                     isListeningArgument = false;
                     LastLocalCommand = "";
                     //omite el comando local actual
                 }
                 else{
-                vts.voiceToSpeech("global command not found ");
+                    mp_negative.start();
+                    vts.voiceToSpeech("global command not found ");
 
                 }
             }

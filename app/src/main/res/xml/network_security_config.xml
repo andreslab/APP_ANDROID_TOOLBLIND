@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--Set application-wide security config using base-config tag.-->
+    <!--<base-config clearTextTrafficPermitted="false"/>-->
+    <!--Set domain-specific security config using domain-config tags. -->
+    <!--See https://developer.android.com/training/articles/security-config.html for more information.-->
+    <domain-config>
+        <domain includeSubdomains="true">smtp.gmail.com</domain>
+        <trust-anchors>
+          <certificates src="@raw/gmailccertificate"/>
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

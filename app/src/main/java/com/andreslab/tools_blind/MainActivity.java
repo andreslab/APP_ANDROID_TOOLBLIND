@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
@@ -39,12 +40,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     MimeMessage emailMessage;
     //::::::::::::
 
+    MediaPlayer mp_positive;
+    MediaPlayer mp_negative;
 
     private static final int ALARM_REQUEST_CODE = 1;
 
     private static final String DEBUG_TAG_GESTURE = "Gesture";
     private GestureDetectorCompat mDetector;
-    ControllerCommands cc = new ControllerCommands(MainActivity.this);
+    ControllerCommands cc;
     VoiceToSpeech vts;
     Vibrator vibrator;
     Boolean validateOnLongPress;
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new MainView(MainActivity.this));
-
+        cc = new ControllerCommands(MainActivity.this);
         //GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this, this);
         //GestureDetector.OnDoubleTapListener
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         validateOnLongPress = false;
+
+        mp_positive = MediaPlayer.create(MainActivity.this,R.raw.alert_positive);
+        mp_negative = MediaPlayer.create(MainActivity.this,R.raw.alert_negative);
 
 
         //parametros.put("mensaje", "hola");
@@ -179,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     Log.d("DATA SPEECH", strSpeech);
                     if(ControllerCommands.isListeningArgument && ControllerCommands.GlobalCommandSelected && validateOnLongPress && strSpeech.length() > 1){
                         Log.d("OPCIONES",".....op 1 .......");
+                        mp_positive.start();
                         //parametros del comando local activo
                         //vts.voiceToSpeech("save Parameters success of local command "+ControllerCommands.LastLocalCommand);
                         parametros.put(ControllerCommands.LastLocalCommand,strSpeech);
@@ -193,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         }
 
                     } else if(strSpeech.equals("ejecutar") && !parametros.isEmpty()){
+                        mp_positive.start();
                         Log.d("OPCIONES",".....op 2 .......");
                         executeCommand();
                     }
@@ -200,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         Log.d("OPCIONES",".....op 1 .......");
                         //nuevo comando tanto global como local
                         String commandType =  this.cc.executeAndAddCommand(strSpeech);
+
                         executeCommandFunction(commandType);
                     }
 
@@ -221,10 +230,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                 switch (ControllerCommands.GlobalCommands) {
                     case "nueva foto":
+
                         Intent f = new Intent(MainActivity.this, CameraActivity.class);
                         startActivity(f);
                         break;
                     case "nueva práctica":
+
                         Intent d = new Intent(MainActivity.this, DigitalBraille.class);
                         startActivity(d);
                         break;
@@ -274,23 +285,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     }
                 }
 
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
-                if (ControllerCommands.GlobalCommands.equals("nueva alarma")) {
-                    switch (ControllerCommands.LastLocalCommand) {
 
-                        case "mensaje":
-
-                            break;
-                        case "dia":
-
-                            break;
-                        case "hora":
-
-                            break;
-
-                        default:
-                    }
-                }
 
                 //::::::::::::::::::::::::::::::::::::::::::::::::::
                 if (ControllerCommands.GlobalCommands.equals("nueva email")) {
@@ -341,17 +336,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     }
                 }
 
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
-                if (ControllerCommands.GlobalCommands.equals("nueva práctica")) {
-                    switch (ControllerCommands.LastLocalCommand) {
-
-                        case "crear operacion":
-
-                            break;
-
-                        default:
-                    }
-                }
 
                 //::::::::::::::::::::::::::::::::::::::::::::::::::
                 if (ControllerCommands.GlobalCommands.equals("nuevo documento")) {
@@ -367,30 +351,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                 //::::::::::::::::::::::::::::::::::::::::::::::::::
                 if (ControllerCommands.GlobalCommands.equals("nueva presentación")) {
-                    switch (ControllerCommands.LastLocalCommand) {
-
-                        case "crear operacion":
-
-                            break;
-
-                        default:
-                    }
-                }
-
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
-                if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
-                    switch (ControllerCommands.LastLocalCommand) {
-
-                        case "crear operacion":
-
-                            break;
-
-                        default:
-                    }
-                }
-
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
-                if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
                     switch (ControllerCommands.LastLocalCommand) {
 
                         case "crear operacion":
@@ -420,13 +380,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva llamada")) {
                 Log.d("NUEVA LLAMADA", "execute");
-                if(parametros.containsKey("contacto") || parametros.containsKey("teléfono")) {
+                if(parametros.containsKey("contacto")){
 
-                    //extraer teléfono de un contacto
+                    String tel = parametros.get("contacto");
 
-
-                    //usar teléfono directo
-                    String tel = parametros.get("teléfono");
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
                             PackageManager.PERMISSION_GRANTED) {
                         Intent e = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
@@ -599,12 +556,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
 
             }
-
-            //::::::::::::::::::::::::::::::::::::::::::::::::::
-            if (ControllerCommands.GlobalCommands.equals("nueva ubicación")) {
-
-            }
-
 
 
 
