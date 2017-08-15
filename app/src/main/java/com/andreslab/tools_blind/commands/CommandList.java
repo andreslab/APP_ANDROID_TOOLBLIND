@@ -19,13 +19,15 @@ public class CommandList {
             "nuevo mensaje",
             /*:::::::::::::::::::::*/
             //"nuevo diagrama",
-            "nueva práctica" //braille digital
+            "nueva práctica", //braille digital
             //"nuevo documento",
             //"nuevo presentación",
             /*:::::::::::::::::::::*/
             //"nuevo juego", //juego de memoria
             /*:::::::::::::::::::::*/
            // "guardar ubicación"
+            "nueva nota",
+            "última nota"
 
 
     };
@@ -52,6 +54,8 @@ public class CommandList {
         //:::::::::::extras::::::::::::::
         //LocalCommands.put("nuevo juego", new String[]{"iniciar","reiniciar","salir"});
         //LocalCommands.put("guardar ubicación", new String[]{"titulo","guardar","salir"});
+        LocalCommands.put("nueva nota", new String[]{"nombre","salir"});
+        LocalCommands.put("última nota", new String[]{"nombre","salir"});
 
     }
 

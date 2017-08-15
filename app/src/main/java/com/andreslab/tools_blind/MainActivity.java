@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +20,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.andreslab.tools_blind.actions.VoiceToSpeech;
@@ -28,10 +31,12 @@ import com.andreslab.tools_blind.models.AccountModel;
 import com.andreslab.tools_blind.models.ContactsModel;
 import com.andreslab.tools_blind.view.MainView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
@@ -57,6 +62,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     Vibrator vibrator;
     Boolean validateOnLongPress;
     Hashtable<String,String> parametros = new Hashtable<String,String>();
+    String AudioSavePathInDevice = null;
+    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+    Random random;
+    MediaRecorder mediaRecorder ;
+    MediaPlayer mediaPlayer ;
+    Boolean recording;
 
     public static ArrayList<ContactsModel> contactos = new ArrayList<ContactsModel>();
     public static ArrayList<AccountModel> cuenta = new ArrayList<AccountModel>();
@@ -81,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         //parametros.put("mensaje", "hola");
         requestDataDB();
+        random = new Random();
+        recording = false;
 
     }
 
@@ -102,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         switch (action){
                 case (MotionEvent.ACTION_DOWN):
+                    if(recording == true){
+                        StopRecord();
+                    }
 
                     break;
                 case (MotionEvent.ACTION_MOVE):
@@ -228,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         //nuevo comando tanto global como local
                         String commandType =  this.cc.executeAndAddCommand(strSpeech);
 
+
                         executeCommandFunction(commandType);
                     }
 
@@ -266,6 +283,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                         ControllerCommands.GlobalCommandSelected = false;
                         ControllerCommands.LastLocalCommand = "";
                         break;
+                    case "última nota":
+                        PlayLastRecord();
+                        ControllerCommands.GlobalCommands = "";
+                        ControllerCommands.isListeningArgument = false;
+                        ControllerCommands.GlobalCommandSelected = false;
+                        ControllerCommands.LastLocalCommand = "";
 
                     default:
                 }
@@ -354,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     }
                 }
 
-                //::::::::::::::::::::::::::::::::::::::::::::::::::
+
 
         }
 
@@ -404,11 +427,21 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
 
                 }
+
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
             }
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva traducción")) {
-
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
             }
+
+
 
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -510,6 +543,47 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                 calendar.clear();
 
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
+
+            }
+
+            //::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+            if (ControllerCommands.GlobalCommands.equals("nueva nota")) {
+
+                recording = true;
+                AudioSavePathInDevice =
+                        Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                                CreateRandomAudioFileName(5) + "AudioRecording.3gp";
+
+                MediaRecorderReady();
+
+                try {
+                    mediaRecorder.prepare();
+                    mediaRecorder.start();
+                } catch (IllegalStateException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                //buttonStart.setEnabled(false);
+                //buttonStop.setEnabled(true);
+
+                Toast.makeText(MainActivity.this, "Recording started",
+                        Toast.LENGTH_LONG).show();
+
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
+
             }
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nuevo mail")) {
@@ -556,6 +630,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
 
                 }
+
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -606,6 +685,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
                     }
 
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
+
                 }
 
 
@@ -613,32 +697,121 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nuevo diagrama")) {
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
 
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva práctica")) {
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
 
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nuevo documento")) {
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
 
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nueva presentación")) {
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
 
             }
 
             //::::::::::::::::::::::::::::::::::::::::::::::::::
             if (ControllerCommands.GlobalCommands.equals("nuevaojuego")) {
+                ControllerCommands.GlobalCommands = "";
+                ControllerCommands.isListeningArgument = false;
+                ControllerCommands.GlobalCommandSelected = false;
+                ControllerCommands.LastLocalCommand = "";
 
             }
 
         }
 
+        public String CreateRandomAudioFileName(int string){
+            StringBuilder stringBuilder = new StringBuilder( string );
+         int i = 0 ;
+            while(i < string ) {
+                stringBuilder.append(RandomAudioFileName.
+                    charAt(random.nextInt(RandomAudioFileName.length())));
 
+                i++ ;
+            }
+            return stringBuilder.toString();
+        }
+
+    public void MediaRecorderReady(){
+        mediaRecorder=new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(AudioSavePathInDevice);
+    }
+
+    public void StopRecord(){
+
+        recording = false;
+
+        mediaRecorder.stop();
+        //buttonStop.setEnabled(false);
+        //buttonPlayLastRecordAudio.setEnabled(true);
+        //buttonStart.setEnabled(true);
+        //buttonStopPlayingRecording.setEnabled(false);
+
+        Toast.makeText(MainActivity.this, "Grabación completa",
+                Toast.LENGTH_LONG).show();
+        mp_positive.start();
+    }
+
+    public void PlayLastRecord() throws IllegalArgumentException,
+            SecurityException, IllegalStateException {
+
+
+        Toast.makeText(MainActivity.this, "Reproducción en proceso", Toast.LENGTH_SHORT).show();
+        recording = false;
+
+        //buttonStop.setEnabled(false);
+        //buttonStart.setEnabled(false);
+        //buttonStopPlayingRecording.setEnabled(true);
+
+       mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(AudioSavePathInDevice);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mp_negative.start();
+        }
+
+        mediaPlayer.start();
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                MediaRecorderReady();
+                Toast.makeText(MainActivity.this, "Reproducción completada", Toast.LENGTH_SHORT).show();
+                mp_positive.start();
+            }
+        });
+        Toast.makeText(MainActivity.this, "Recording Playing",
+                Toast.LENGTH_LONG).show();
+    }
 
     }
 

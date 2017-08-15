@@ -71,7 +71,8 @@ public class PermissionsActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_SMS };
+            Manifest.permission.READ_SMS,
+    };
 
     public static final int PICK_CONTACT_REQUEST = 1 ;
     private Uri contactUri;
@@ -119,8 +120,8 @@ public class PermissionsActivity extends AppCompatActivity {
 
     public void init_permissions(){
         RequestDataBase rdb = new RequestDataBase(PermissionsActivity.this, PermissionsActivity.this);
-        ArrayList<PermissionModel> pm = new ArrayList<PermissionModel>();
-        pm =   rdb.showData_permissions();
+        ArrayList<AccountModel> pm = new ArrayList<AccountModel>();
+        pm =   rdb.showData_account();
 
 
         //Log.d("tag", pm.get(0).getPermission_name());
