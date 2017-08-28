@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs{
+        config{
+            keyAlias 'toolblind_app'
+            keyPassword '123456Blind'
+            storeFile file('/Users/macbookpro/Google Drive/Proyectos/PROYECTO_TOOLS_BLIND/toolblind.jks')
+            storePassword '123456Blind'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {

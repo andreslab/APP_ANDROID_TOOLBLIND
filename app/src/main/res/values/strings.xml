@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TOOLS_BLIND</string>
+    <string name="app_name">Toolblind</string>
     <string name="title_activity_send_email">SendEmailActivity</string>
     <string name="email">Ingresar email</string>
     <string name="pass">Ingresar contraseña</string>
