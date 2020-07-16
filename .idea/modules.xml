@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/APP_ANDROID_TOOLBLIND.iml" filepath="$PROJECT_DIR$/APP_ANDROID_TOOLBLIND.iml" group="APP_ANDROID_TOOLBLIND" />
+      <module fileurl="file://$PROJECT_DIR$/app/APP_ANDROID_TOOLBLIND-app.iml" filepath="$PROJECT_DIR$/app/APP_ANDROID_TOOLBLIND-app.iml" group="APP_ANDROID_TOOLBLIND/app" />
       <module fileurl="file://$PROJECT_DIR$/TOOLS_BLIND.iml" filepath="$PROJECT_DIR$/TOOLS_BLIND.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

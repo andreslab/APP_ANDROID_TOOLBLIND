@@ -27,7 +27,7 @@
         android:roundIcon="@drawable/logo_toolblind"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PermissionsActivity">
+        <activity android:name=".DigitalBraille">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +37,7 @@
         <activity android:name=".MainActivity"
             android:theme="@style/themeWithoutActionbar"/>
         <activity android:name=".CameraActivity" />
-        <activity android:name=".DigitalBraille" />
+        <activity android:name=".PermissionsActivity" />
         <receiver android:name=".AlarmActivity" />
 
     </application>
